@@ -1,5 +1,6 @@
 package cn.heshiqian.framework.h.servlet.view;
 
+import cn.heshiqian.framework.h.cflog.core.CFLog;
 import cn.heshiqian.framework.h.servlet.database.FrameworkMemoryStorage;
 import cn.heshiqian.framework.h.servlet.pojo.VO;
 import cn.heshiqian.framework.h.servlet.startup.ContextScanner;
@@ -18,6 +19,7 @@ import java.util.Iterator;
 
 public final class ViewHandler {
 
+    private static CFLog cfLog=new CFLog(ViewHandler.class);
 
     private void analysis(Object rs, HttpServletResponse response, Cookie[] cookies, boolean isMapToFile, String fileName) {
         if (rs == null) {
@@ -107,5 +109,13 @@ public final class ViewHandler {
                 HttpHelper.sendErr(response,"JSON生成异常！<br>"+e.getMessage());
             }
         }
+    }
+
+
+    public static void reSendStaticFile(HttpServletResponse response,String fileURI,boolean printLog){
+        if(printLog)
+            cfLog.war("静态文件访问："+fileURI);
+        String fileURL=FrameworkMemoryStorage.staticFileDir+fileURI.substring(1,fileURI.length());
+        HttpHelper.sendNormal(response,Tool.FileReadByUTF8(fileURL));
     }
 }

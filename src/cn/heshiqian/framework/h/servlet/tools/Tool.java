@@ -4,6 +4,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -97,6 +98,24 @@ public final class Tool {
 
 
         return listMap;
+    }
+
+
+    public static ArrayList<String> listAllFile(String startPath){
+        ArrayList<String> fileList=new ArrayList<>();
+        File fDir=new File(startPath);
+
+        File[] files = fDir.listFiles();
+        for(File f:files){
+            if(f.isDirectory()){
+                if(f.getName().equals("WEB-INF")||f.getName().equals("META-INF"))
+                    continue;
+                fileList.addAll(listAllFile(f.getAbsolutePath()));
+            }else {
+                fileList.add(f.getAbsolutePath());
+            }
+        }
+        return fileList;
     }
 
 }

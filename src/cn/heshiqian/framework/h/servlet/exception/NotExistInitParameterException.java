@@ -1,8 +1,8 @@
 package cn.heshiqian.framework.h.servlet.exception;
 
-public class NotExistInitClassException extends RuntimeException {
+public class NotExistInitParameterException extends RuntimeException {
 
-    public NotExistInitClassException(String message) {
+    public NotExistInitParameterException(String message) {
         super(message);
     }
 }

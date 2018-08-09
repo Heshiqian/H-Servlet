@@ -1,8 +1,10 @@
 package javatest;
 
 import cn.heshiqian.framework.h.cflog.core.CFLog;
+import cn.heshiqian.framework.h.servlet.tools.Tool;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class m {
 
@@ -10,10 +12,14 @@ public class m {
 
     public static void main(String[] args) {
 
-        cfLog.info("这是一段测试语言");
-        cfLog.war("这是一段测试语言");
-        cfLog.err("这是一段测试语言");
-        cfLog.print("这是一段测试语言");
+//        cfLog.info("这是一段测试语言");
+//        cfLog.war("这是一段测试语言");
+//        cfLog.err("这是一段测试语言");
+//        cfLog.print("这是一段测试语言");
+
+
+        ArrayList<String> strings = Tool.listAllFile("G:\\IDEA_Project\\H-Servlet\\web");
+        System.out.println(strings.toString());
 
     }
 }

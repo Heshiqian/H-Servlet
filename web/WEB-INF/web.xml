@@ -17,6 +17,10 @@
         <param-name>staticFilePath</param-name>
         <param-value>/</param-value>
     </context-param>
+    <context-param>
+        <param-name>staticFileLog</param-name>
+        <param-value>true</param-value>
+    </context-param>
     <servlet-mapping>
         <servlet-name>main</servlet-name>
         <url-pattern>/</url-pattern>

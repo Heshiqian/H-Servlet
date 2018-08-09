@@ -36,11 +36,13 @@ public final class ServletReqHandler {
         String serverPort = String.valueOf(request.getServerPort());
         String requestURL = request.getRequestURL().toString();
         requestURL=requestURL.substring(requestURL.indexOf(serverPort)+serverPort.length(),requestURL.length());
-        cfLog.info("path:"+requestURL);
 
         //去除浏览器的favicon.ico请求
         if(checkIconFile(requestURL)) return;
+        //单'/'处理首页
+        if(requestURL.equals("/")) return;
 
+        cfLog.info("path:"+requestURL);
         //解析出GET请求的参数key和值
         HashMap<String,String> keyMap=new HashMap<>();
         Enumeration<String> keys = request.getParameterNames();

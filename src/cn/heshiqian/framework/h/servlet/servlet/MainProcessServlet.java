@@ -124,7 +124,9 @@ public final class MainProcessServlet extends HttpServlet {
         temp=temp.substring(temp.indexOf("/", 10),temp.length());
         for(String s : fileList){
             if(s.equals(temp)){
-                ViewHandler.reSendStaticFile(response,temp,FrameworkMemoryStorage.staticFileLogSwitch);
+                //todo 只用浏览器发送的接受值不足以判断所有静态文件，还需要看后缀名，再说啦！~
+                String contentType = request.getHeader("Accept").split(",")[0];
+                ViewHandler.reSendStaticFile(response,temp,contentType,FrameworkMemoryStorage.staticFileLogSwitch);
                 return;
             }
         }

@@ -112,10 +112,30 @@ public final class ViewHandler {
     }
 
 
-    public static void reSendStaticFile(HttpServletResponse response,String fileURI,boolean printLog){
-        if(printLog)
+    public static void reSendStaticFile(HttpServletResponse response,String fileURI,String head,boolean printLog){
+        if(printLog){
             cfLog.war("静态文件访问："+fileURI);
+            cfLog.war("收到的头："+head);
+        }
+
         String fileURL=FrameworkMemoryStorage.staticFileDir+fileURI.substring(1,fileURI.length());
-        HttpHelper.sendNormal(response,Tool.FileReadByUTF8(fileURL));
+
+        if(head.equals("*/*")){
+            //不设置头部发送，全接受型
+            HttpHelper.sendCustomTitle(response,"",Tool.FileReadByUTF8(fileURL));
+            return;
+        }
+
+        if(head.contains("text")||head.contains("html")){
+            //发送文本类内容
+            HttpHelper.sendCustomTitle(response,head,Tool.FileReadByUTF8(fileURL));
+        } else if(head.contains("application")){
+            //Json格式
+            HttpHelper.sendJson(response,Tool.FileReadByUTF8(fileURL));
+        } else if(head.contains("image")){
+            //发送流
+            HttpHelper.sendStream(response,Tool.FileReadByStream(fileURL));
+        }
+
     }
 }

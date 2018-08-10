@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
+</head>
+<body>
+<script>
+    $(function () {
+        $.ajax({
+            url:"/test",
+            type:"POST",
+            data:"{\"name\":\"test\",\"pwd\":\"1234\"}",
+            contentType:"appliction/json",
+            dataType:"json",
+            success:function (data) {
+                alert(data);
+            }
+        })
+    });
+</script>
+</body>
+</html>

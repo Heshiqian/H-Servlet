@@ -1,0 +1,52 @@
+<div>
+    <!--In WS uses this-->
+    <!--<link rel="stylesheet" href="/web/static/css/datatables.css">-->
+    <!--<script src="/web/static/js/datatables.js"></script>-->
+    <!--In IDEA uses this-->
+    <!--<link rel="stylesheet" href="/static/css/jquery.dataTables.min.css">-->
+    <!--<script src="/static/js/jquery.dataTables.min.js"></script>-->
+</div>
+<div class="" style="padding: 8px;">
+    <table id="table" class="ui celled table">
+        <thead>
+        <tr>
+            <th>学校ID</th>
+            <th>学校名称</th>
+            <th>学校代码</th>
+            <th>学校类型</th>
+            <th>电子邮件</th>
+            <th>学校地址</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
+<div>
+    <script>
+        $.ajax({
+            url:"../web/data.json",
+            dataType:"json",
+            type:"POST",
+            success:function (data) {
+                console.log(data);
+                for(var kay in data){
+
+                    $('#table>tbody').append('<tr>' +
+                        '<td>'+data[kay].name+'</td>' +
+                        '<td>'+data[kay].nickname+'</td>' +
+                        '</tr>');
+
+                }
+            },
+            error:function () {
+                alert("Loaded Error")
+            }
+        })
+
+
+
+
+    </script>
+</div>

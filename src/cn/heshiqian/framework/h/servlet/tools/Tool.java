@@ -48,6 +48,22 @@ public final class Tool {
         return "文件读入失败！请检查是否有足够权限访问！";
     }
 
+    public static InputStream FileReadByStream(String path){
+
+        File file = new File(path);
+        if(file.exists()){
+            try {
+                return new FileInputStream(file);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                System.out.println("文件貌似没有权限访问！");
+            }
+        }else {
+            throw new RuntimeException(new FileNotFoundException("找不到文件："+path));
+        }
+        return null;
+    }
+
     public static String InjectKVMapToString(String old, HashMap<String,Object> map){
         String temp=old;
         Iterator<String> iterator = map.keySet().iterator();

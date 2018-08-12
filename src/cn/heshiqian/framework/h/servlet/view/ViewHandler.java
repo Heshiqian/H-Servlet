@@ -112,27 +112,32 @@ public final class ViewHandler {
     }
 
 
-    public static void reSendStaticFile(HttpServletResponse response,String fileURI,String head,boolean printLog){
+    public static void reSendStaticFile(HttpServletResponse response,String fileURI,String fileName,String head,boolean printLog){
         if(printLog){
             cfLog.war("静态文件访问："+fileURI);
             cfLog.war("收到的头："+head);
         }
-
+        String fileLastName=fileName.substring(fileName.lastIndexOf(".")+1,fileName.length());
         String fileURL=FrameworkMemoryStorage.staticFileDir+fileURI.substring(1,fileURI.length());
 
         if(head.equals("*/*")){
             //不设置头部发送，全接受型
-            HttpHelper.sendCustomTitle(response,"",Tool.FileReadByUTF8(fileURL));
+            if(fileLastName.equals("woff")||fileLastName.equals("otf")||fileLastName.equals("eot")||fileLastName.equals("svg")||fileLastName.equals("woff2")||fileLastName.equals("ttf")){
+                //字体文件，二进制发送(流)
+                HttpHelper.sendStream(response,Tool.FileReadByStream(fileURL));
+            }else {
+                HttpHelper.sendCustomTitle(response,"*/*",Tool.FileReadByUTF8(fileURL));
+            }
             return;
         }
 
-        if(head.contains("text")||head.contains("html")){
+        if(head.contains("text")||head.contains("html")||head.contains("css")||head.contains("xml")){
             //发送文本类内容
             HttpHelper.sendCustomTitle(response,head,Tool.FileReadByUTF8(fileURL));
-        } else if(head.contains("application")){
+        } else if(head.contains("application")||head.contains("json")){
             //Json格式
             HttpHelper.sendJson(response,Tool.FileReadByUTF8(fileURL));
-        } else if(head.contains("image")){
+        } else if(head.contains("image")||head.contains("webp")||head.contains("video")){
             //发送流
             HttpHelper.sendStream(response,Tool.FileReadByStream(fileURL));
         }

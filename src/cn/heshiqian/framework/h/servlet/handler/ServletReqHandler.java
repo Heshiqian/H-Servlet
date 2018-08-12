@@ -1,4 +1,4 @@
-package cn.heshiqian.framework.h.servlet.servlet;
+package cn.heshiqian.framework.h.servlet.handler;
 
 import cn.heshiqian.framework.h.cflog.core.CFLog;
 import cn.heshiqian.framework.h.servlet.database.HServlet;
@@ -11,7 +11,6 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 

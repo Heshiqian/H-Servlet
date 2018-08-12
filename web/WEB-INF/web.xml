@@ -7,6 +7,7 @@
     <servlet>
         <servlet-name>main</servlet-name>
         <servlet-class>cn.heshiqian.framework.h.servlet.servlet.MainProcessServlet</servlet-class>
+        <!--<servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>-->
         <load-on-startup>1</load-on-startup>
     </servlet>
     <context-param>

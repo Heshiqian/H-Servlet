@@ -29,6 +29,7 @@ public final class HttpHelper {
     }
 
     public static void sendJson(HttpServletResponse response, String string) {
+        response.setCharacterEncoding("utf-8");
         response.setHeader("Content-Type", "application/json");
         send(response, string);
     }

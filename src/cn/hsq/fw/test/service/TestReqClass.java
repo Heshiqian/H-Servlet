@@ -6,9 +6,7 @@ import cn.heshiqian.framework.h.servlet.pojo.RequestMethod;
 import cn.heshiqian.framework.h.servlet.pojo.VO;
 
 import javax.servlet.http.Cookie;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 @Mapping
 public class TestReqClass {
@@ -31,12 +29,10 @@ public class TestReqClass {
         System.out.println(t);
         System.out.println(s);
         cfLog.info("aha!welcome!");
-
         VO vo = new VO();
         vo.openTemplate();
         vo.setTemplateFile("A.html");
-        vo.put("a","我放了个东西在这里");
-
+        vo.put( "a","我放了个东西在这里");
         return vo;
     }
 

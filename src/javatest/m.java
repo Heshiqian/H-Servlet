@@ -1,6 +1,7 @@
 package javatest;
 
 import cn.heshiqian.framework.h.cflog.core.CFLog;
+
 import cn.heshiqian.framework.h.servlet.tools.Tool;
 
 import java.io.File;
@@ -18,7 +19,7 @@ public class m {
 //        cfLog.print("这是一段测试语言");
 
 
-        ArrayList<String> strings = Tool.listAllFile("G:\\IDEA_Project\\H-Servlet\\web");
+        ArrayList<String> strings = Tool.listAllFile("G:\\IDEA_Project\\H-Servlet\\libs");
         System.out.println(strings.toString());
 
     }

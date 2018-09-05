@@ -1,6 +1,7 @@
 package cn.heshiqian.framework.h.servlet.servlet;
 
 import cn.heshiqian.framework.h.cflog.core.CFLog;
+
 import cn.heshiqian.framework.h.servlet.classs.ClassManage;
 import cn.heshiqian.framework.h.servlet.database.FrameworkMemoryStorage;
 import cn.heshiqian.framework.h.servlet.exception.NotExistInitParameterException;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 
 public final class MainProcessServlet extends HttpServlet {
 
-    private static CFLog cfLog = new CFLog(MainProcessServlet.class);
+    private static CFLog cfLog=new CFLog(MainProcessServlet.class);
 
     private static ServletReqHandler servletReqHandler;
     private ArrayList<String> fileList;

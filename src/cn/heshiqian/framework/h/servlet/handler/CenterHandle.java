@@ -2,6 +2,7 @@ package cn.heshiqian.framework.h.servlet.handler;
 
 
 import cn.heshiqian.framework.h.cflog.core.CFLog;
+
 import cn.heshiqian.framework.h.servlet.annotation.*;
 import cn.heshiqian.framework.h.servlet.classs.ClassManage;
 import cn.heshiqian.framework.h.servlet.classs.ClassPool;
@@ -21,7 +22,7 @@ import java.util.HashMap;
 
 public final class CenterHandle {
 
-    private CFLog cfLog = new CFLog(CenterHandle.class);
+    private CFLog cfLog=new CFLog(CenterHandle.class);
     private static ViewHandler viewHandler = new ViewHandler();
 
     public void distributor(int methodCode, String url, HttpServletRequest request, HttpServletResponse response, Cookie[] cookies, HashMap<String, String> keyMap) {

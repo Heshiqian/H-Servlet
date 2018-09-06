@@ -14,8 +14,8 @@ public class TestReqClass {
     private CFLog cfLog=new CFLog(TestReqClass.class);
 
 
-    @NullReturn
-//    @MapToFile //这个决定是否使用VO返回，VO的话，必须加这个，不加这个VO对象无效
+//    @NullReturn
+    @MapToFile //这个决定是否使用VO返回，VO的话，必须加这个，不加这个VO对象无效
     @RequestUrl(value = "/a") //设置访问Url
     /**
      * _@Cookies 是获取Cookie的注解

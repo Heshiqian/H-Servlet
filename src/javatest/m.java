@@ -19,8 +19,10 @@ public class m {
 //        cfLog.print("这是一段测试语言");
 
 
-        ArrayList<String> strings = Tool.listAllFile("G:\\IDEA_Project\\H-Servlet\\libs");
-        System.out.println(strings.toString());
-
+//        ArrayList<String> strings = Tool.listAllFile("G:\\IDEA_Project\\H-Servlet\\libs");
+//        System.out.println(strings.toString());
+        File file = new File("D:\\IDEAP\\H-Serlvet");
+        String s = Tool.FileFinder.find(file, "test.html");
+        System.out.println(s);
     }
 }

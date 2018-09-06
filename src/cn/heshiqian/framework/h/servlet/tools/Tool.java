@@ -10,19 +10,37 @@ import java.util.Iterator;
 
 public final class Tool {
 
-    private static String fileFinderPath="none";
-
-    public static String FileFinder(File fFir,String fileName){
-        File[] files = fFir.listFiles();
-        for(int i=0;i<files.length;i++){
-            if(files[i].isDirectory()){
-                FileFinder(files[i], fileName);
-            }
-            if(fileName.equals(files[i].getName()))
-                fileFinderPath = files[i].getAbsolutePath();
+    public static class FileFinder{
+        private static String fileFinderPath="none";
+        public static String find(File file,String fileName){
+            fileFinderPath="none";
+            return _f(file,fileName);
         }
-        return fileFinderPath;
+        private static String _f(File fFir,String fileName){
+            File[] files = fFir.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].isDirectory()) {
+                    _f(files[i],fileName);
+                }
+                if(files[i].isFile())
+                    if (fileName.equals(files[i].getName())){
+                        fileFinderPath = files[i].getAbsolutePath();
+                    }
+            }
+            return fileFinderPath;
+        }
     }
+//    public static String FileFinder(File fFir,String fileName){
+//        File[] files = fFir.listFiles();
+//        for(int i=0;i<files.length;i++){
+//            if(files[i].isDirectory()){
+//                FileFinder(files[i], fileName);
+//            }
+//            if(fileName.equals(files[i].getName()))
+//                fileFinderPath = files[i].getAbsolutePath();
+//        }
+//        return fileFinderPath;
+//    }
 
     public static String FileReadByUTF8(String path){
 

@@ -116,7 +116,7 @@ public final class ContextScanner {
         File file = new File(home);
 
         //找到conf文件
-        String path = Tool.FileFinder(file, "configuration.conf");
+        String path = Tool.FileFinder.find(file, "configuration.conf");
         System.out.println(path);
         XConfTree confTree = XConf.read(path);
         //获取配置

@@ -43,7 +43,9 @@ public final class ViewHandler {
                         HttpHelper.sendErr(response, "此接口返回的VO设置了模板模式，但是你没有设置任何对应的文件名，请使用setTemplateFile方法设置！");
                     } else {
                         File fDir = new File(ContextScanner.getContext().getRealPath(FrameworkMemoryStorage.staticFilePath));
-                        String path = Tool.FileFinder(fDir, vo.getTemplateFile());
+                        String path = Tool.FileFinder.find(fDir, vo.getTemplateFile());
+                        if("none".equals(path))
+                            HttpHelper.sendErr(response,"文件不存在! 文件名："+vo.getTemplateFile()+" 查找路径："+fDir.getAbsolutePath());
                         String s = Tool.FileReadByUTF8(path);
                         HashMap<String, Object> map = vo.getMap();
                         if (map.size() == 0) {

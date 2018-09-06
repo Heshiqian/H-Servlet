@@ -52,6 +52,7 @@ public final class CenterHandle {
                 errMsg += "<span style=\"font-size:12px;color:#333\">类：" + s.getClassName() + "中，方法：" + s.getMethodName() + "，第：" + s.getLineNumber() + "行</span><br>";
             }
             HttpHelper.sendErr(response, errMsg);
+            e.printStackTrace();
         }
     }
 

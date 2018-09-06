@@ -70,6 +70,22 @@ public final class HttpHelper {
             e.printStackTrace();
         }
 
+    }
 
+    public static boolean isMIME(String lastName){
+        if(lastName.equals("html")||lastName.equals("txt")||lastName.equals("gif")||lastName.equals("jpg")||lastName.equals("png"))
+            return true;
+        if(lastName.equals("au")||lastName.equals("midi")||lastName.equals("mpg")||lastName.equals("mpeg")||lastName.equals("avi"))
+            return true;
+        if(lastName.equals("mp4")||lastName.equals("mp3")||lastName.equals("gz")||lastName.equals("zip")||lastName.equals("tar"))
+            return true;
+        if(lastName.equals("css")||lastName.equals("js")||lastName.equals("woff")||lastName.equals("woff2")||lastName.equals("font"))
+            return true;
+        if(lastName.equals("jsp")||lastName.equals("xml")||lastName.equals("json")||lastName.equals("svg")||lastName.equals("eot"))
+            return true;
+        if(lastName.equals("otf")||lastName.equals("shtml")||lastName.equals("json")||lastName.equals("svg")||lastName.equals("eot"))
+            return true;
+
+        return false;
     }
 }

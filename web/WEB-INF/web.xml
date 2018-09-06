@@ -10,18 +10,12 @@
         <!--<servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>-->
         <load-on-startup>1</load-on-startup>
     </servlet>
+
     <context-param>
         <param-name>classesPackagePath</param-name>
         <param-value>cn.hsq.fw.test</param-value>
     </context-param>
-    <context-param>
-        <param-name>staticFilePath</param-name>
-        <param-value>/</param-value>
-    </context-param>
-    <context-param>
-        <param-name>staticFileLog</param-name>
-        <param-value>false</param-value>
-    </context-param>
+
     <servlet-mapping>
         <servlet-name>main</servlet-name>
         <url-pattern>/</url-pattern>

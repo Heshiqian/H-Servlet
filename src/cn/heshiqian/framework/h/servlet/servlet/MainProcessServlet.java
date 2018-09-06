@@ -24,10 +24,10 @@ public final class MainProcessServlet extends HttpServlet {
     private static CFLog cfLog=new CFLog(MainProcessServlet.class);
 
     private static ServletReqHandler servletReqHandler;
-    private ArrayList<String> fileList;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
+        cfLog.war("框架开始启动");
         if (!FrameworkMemoryStorage.isBeforeScan) {
             ContextScanner.newInstance();
             ContextScanner.saveContext(config.getServletContext());
@@ -36,67 +36,12 @@ public final class MainProcessServlet extends HttpServlet {
 
             cfLog.info("本地地址：" + FrameworkMemoryStorage.allLocalIpAddress.toString());
 
-            String classesPackagePath = ContextScanner.getContext().getInitParameter("classesPackagePath");
-            String staticFilePath = ContextScanner.getContext().getInitParameter("staticFilePath");
-            boolean staticFileLog =Boolean.valueOf(ContextScanner.getContext().getInitParameter("staticFileLog"));
-
-            cfLog.info("配置信息：classesPackagePath --> " + classesPackagePath);
-            cfLog.info("配置信息：staticFilePath --> " + staticFilePath);
-
-            //2018年8月9日13:23:58
-            //添加配置文件缺少的问题，避免框架启动失败
-            if (classesPackagePath == null || classesPackagePath.equals("")) {
-                cfLog.err("缺少上下文配置信息：classesPackagePath\n" +
-                        "请在web.xml下配置<context-param>标签\n" +
-                        "其中<param-name>为classesPackagePath\n" +
-                        "<param-value>值为包名(最大一层即可)");
-
-                throw new NotExistInitParameterException("缺少上下文配置信息：classesPackagePath");
-            }
-            if (staticFilePath == null || staticFilePath.equals("")) {
-                cfLog.err("缺少上下文配置信息：staticFilePath\n" +
-                        "请在web.xml下配置<context-param>标签\n" +
-                        "其中<param-name>为'staticFilePath'\n" +
-                        "<param-value>值为静态文件所在路径(最大一层即可，若需整个目录直接填写'/'即可)");
-
-                throw new NotExistInitParameterException("缺少上下文配置信息：staticFilePath");
-            }
-
-            FrameworkMemoryStorage.classesPackagePath = classesPackagePath;
-            FrameworkMemoryStorage.staticFilePath = staticFilePath;
-            FrameworkMemoryStorage.staticFileDir = ContextScanner.getContext().getRealPath(staticFilePath);
-            FrameworkMemoryStorage.staticFileLogSwitch=staticFileLog;
-
-            cfLog.info("设置的静态目录：" + FrameworkMemoryStorage.staticFileDir);
-
-            fileList = Tool.listAllFile(FrameworkMemoryStorage.staticFileDir);
-            cfLog.info("扫描到的静态文件：" + fileList.size() + "个");
-            for (int i = 0; i < fileList.size(); i++) {
-                String one = fileList.get(i);
-                String two = one.replace(FrameworkMemoryStorage.staticFileDir, "/");
-                String tre = two.replace("\\", "/");
-                fileList.remove(i);
-                fileList.add(i, tre);
-            }
-            int mark = 1;
-            System.out.println("文件列表如下：");
-            for (int i = 0; i < fileList.size(); i++, mark++) {
-                System.out.print(fileList.get(i));
-                if (mark % 10 == 0)
-                    System.out.println();
-                else
-                    if (mark == fileList.size())
-                        System.out.println();
-                    else
-                        System.out.print(",");
-            }
-
             ClassManage.newInstance();
             ClassManage.doScan(FrameworkMemoryStorage.classesPackagePath);
         }
 
         StaticFileHandle.newInstance();
-        StaticFileHandle.prepare(fileList);
+        StaticFileHandle.prepare(FrameworkMemoryStorage.fileList);
 
         if (servletReqHandler == null) {
             servletReqHandler = new ServletReqHandler(MainProcessServlet.class);

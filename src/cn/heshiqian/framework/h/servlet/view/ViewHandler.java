@@ -15,6 +15,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.text.View;
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -145,4 +146,13 @@ public final class ViewHandler {
         }
 
     }
+
+    public static void reSendCustomText(HttpServletResponse response,String s){
+        HttpHelper.sendNormal(response,"<h1>"+s+"</h1>");
+    }
+
+    public static void reSendErrorCode(HttpServletResponse response,int code) throws IOException {
+        response.sendError(code);
+    }
+
 }

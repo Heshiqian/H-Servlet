@@ -23,4 +23,6 @@ public final class FrameworkMemoryStorage {
     public static ArrayList<String> allLocalIpAddress=null;
 
     public static boolean staticFileLogSwitch=false;
+
+    public static ArrayList<String> fileList;
 }

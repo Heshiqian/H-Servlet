@@ -10,25 +10,18 @@ import java.util.Iterator;
 
 public final class Tool {
 
+    private static String fileFinderPath="none";
 
     public static String FileFinder(File fFir,String fileName){
-
         File[] files = fFir.listFiles();
         for(int i=0;i<files.length;i++){
             if(files[i].isDirectory()){
-                String rs = FileFinder(files[i], fileName);
-                if(rs.equals("none"))
-                    return "none";
-                else
-                    return rs;
+                FileFinder(files[i], fileName);
             }
             if(fileName.equals(files[i].getName()))
-                return files[i].getAbsolutePath();
-            else
-                return "none";
+                fileFinderPath = files[i].getAbsolutePath();
         }
-
-        return "none";
+        return fileFinderPath;
     }
 
     public static String FileReadByUTF8(String path){

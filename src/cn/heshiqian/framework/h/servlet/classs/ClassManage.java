@@ -2,6 +2,7 @@ package cn.heshiqian.framework.h.servlet.classs;
 
 import cn.heshiqian.framework.h.cflog.core.CFLog;
 
+import cn.heshiqian.framework.h.servlet.database.HServlet;
 import cn.heshiqian.framework.h.servlet.startup.ClassScanner;
 import cn.heshiqian.framework.h.servlet.tools.HttpHelper;
 
@@ -38,12 +39,12 @@ public final class ClassManage {
     public static Class checkClassWasInit(String url){
         Class search = ClassScanner.search(url);
         if(search==null){
-            cfLog.war("没有此接口的相关类");
+            cfLog.war(HServlet.CLASS_INFO_1);
             return null;
         }
         if(!ClassManage.Bridge.checkClassIsInit(search)){
-            cfLog.war("没有初始化的类");
-            cfLog.info("即将初始化类："+search.getTypeName());
+            cfLog.war(HServlet.CLASS_INFO_2);
+            cfLog.info(HServlet.CLASS_INFO_3+search.getTypeName());
             ClassManage.Bridge.newClass(search);
             return search;
         }else
@@ -104,7 +105,7 @@ public final class ClassManage {
                                 int count = map.get(oneClass);
                                 if (count < 0) {
                                     lifeRecycle.assertRemove(oneClass);
-                                    cfLog.print(oneClass + "类因为长时间无使用，已被移出类池！");
+                                    cfLog.print(oneClass + HServlet.CLASS_LONG_TIME_TO_USE);
                                 } else {
                                     if (count < -999)
                                         count = -1;

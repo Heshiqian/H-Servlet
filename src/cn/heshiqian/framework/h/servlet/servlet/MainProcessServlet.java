@@ -4,6 +4,7 @@ import cn.heshiqian.framework.h.cflog.core.CFLog;
 
 import cn.heshiqian.framework.h.servlet.classs.ClassManage;
 import cn.heshiqian.framework.h.servlet.database.FrameworkMemoryStorage;
+import cn.heshiqian.framework.h.servlet.database.HServlet;
 import cn.heshiqian.framework.h.servlet.exception.NotExistInitParameterException;
 import cn.heshiqian.framework.h.servlet.handler.ServletReqHandler;
 import cn.heshiqian.framework.h.servlet.handler.StaticFileHandle;
@@ -27,14 +28,14 @@ public final class MainProcessServlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        cfLog.war("框架开始启动");
+        cfLog.war(HServlet.HS_START_INFO_1);
         if (!FrameworkMemoryStorage.isBeforeScan) {
             ContextScanner.newInstance();
             ContextScanner.saveContext(config.getServletContext());
-            cfLog.info("上下文已存储！-->" + ContextScanner.getContext().toString());
+            cfLog.info( HServlet.HS_START_INFO_2 + ContextScanner.getContext().toString());
             ContextScanner.prepare();
 
-            cfLog.info("本地地址：" + FrameworkMemoryStorage.allLocalIpAddress.toString());
+            cfLog.info( HServlet.HS_START_INFO_3 + FrameworkMemoryStorage.allLocalIpAddress.toString());
 
             ClassManage.newInstance();
             ClassManage.doScan(FrameworkMemoryStorage.classesPackagePath);
@@ -45,16 +46,16 @@ public final class MainProcessServlet extends HttpServlet {
 
         if (servletReqHandler == null) {
             servletReqHandler = new ServletReqHandler(MainProcessServlet.class);
-            cfLog.info("Handler已生成！内存地址：" + servletReqHandler.toString());
+            cfLog.info(HServlet.HS_START_INFO_4 + servletReqHandler.toString());
         } else {
-            cfLog.war("Handler已被生成过！这里重新执行了初始化");
+            cfLog.war(HServlet.HS_START_INFO_5);
         }
         super.init(config);
     }
 
     @Override
     public void destroy() {
-        cfLog.war("主处理Servlet正在执行销毁");
+        cfLog.war(HServlet.HS_START_INFO_6);
         ClassManage.Bridge.stopLifeRecycle();
         super.destroy();
     }

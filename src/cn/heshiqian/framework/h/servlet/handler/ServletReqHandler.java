@@ -81,7 +81,7 @@ public final class ServletReqHandler {
                     String json = Tool.readInputStream(request.getInputStream());
 
                     if(json.equals("")){
-                        HttpHelper.sendErr(response,"传入数据流为空！如果没有传入任何'{}'、'[]'的空JSON结构，可能导致框架解析JSON异常！如果需要空执行，请不要将方法使用返回值并且不要带上@ResponesBody注解！");
+                        HttpHelper.sendErr(response,HServlet.SQH_ERROR_1);
                         return;
                     }
                     if(json.indexOf("{")==0&&json.lastIndexOf("}")==json.length()-1){
@@ -98,12 +98,12 @@ public final class ServletReqHandler {
 //                        HashMap<String, ?> listMap = Tool.jsonToList(json);
 //                        keyMap.putAll(listMap);
 //                        centerHandle.distributor(RequestMethod.POST,requestURL,request,response,request.getCookies(),keyMap);
-                        HttpHelper.sendErr(response,"未开发部分，请等待更新！");
+                        HttpHelper.sendErr(response,HServlet.SQH_ERROR_UNCODE);
                         return;
                     }
-                    throw new JSONException("检查到JSON开始与结束没有使用'{','}','[',']'这些括弧包括，请检查你传入的JSON串！");
+                    throw new JSONException(HServlet.SQH_ERROR_2);
                 } catch (IOException e) {
-                    HttpHelper.sendErr(response,"读入数据流时发生错误！");
+                    HttpHelper.sendErr(response,HServlet.SQH_ERROR_3);
                     e.printStackTrace();
                 }
             }

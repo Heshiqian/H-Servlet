@@ -28,7 +28,7 @@ public final class StaticFileHandle {
     public static StaticFileHandle newInstance(){
         if(staticFileHandle==null){
             staticFileHandle=new StaticFileHandle();
-            cfLog.info("静态文件代理Handle已生成！地址："+staticFileHandle.toString());
+            cfLog.info(HServlet.SFH_INFO_1+staticFileHandle.toString());
             return staticFileHandle;
         }else
             return staticFileHandle;
@@ -39,7 +39,7 @@ public final class StaticFileHandle {
         if(FrameworkMemoryStorage.filterType == HServlet.FILER_TYPE_CUSTOM){
             String confJson=FrameworkMemoryStorage.filterCustomContent;
             if(confJson==null||confJson.equals("")){
-                cfLog.err("配置信息为空！请检查'filterList'键值！");
+                cfLog.err(HServlet.SFH_ERROR_1);
                 return;
             }
             try{
@@ -48,11 +48,11 @@ public final class StaticFileHandle {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     diyMapping.put(jsonObject.getString("type"),jsonObject.getString("value"));
                 }
-                cfLog.info("自定配置解析完毕！");
+                cfLog.info(HServlet.SFH_INFO_2);
                 cfLog.print(diyMapping.toString());
             }catch (JSONException e){
                 e.printStackTrace();
-                cfLog.err("自定义配置解析失败！使用默认配置：'自动'");
+                cfLog.err(HServlet.SFH_ERROR_2);
             }
         }
     }
@@ -94,7 +94,7 @@ public final class StaticFileHandle {
                         File file = new File(FrameworkMemoryStorage.staticFileDir + val);
                         if(file.exists()&&file.isDirectory()) {
                             if(FrameworkMemoryStorage.staticFileLogSwitch)
-                                cfLog.print("文件解析为'路径匹配'，路径："+path+" 配置："+val);
+                                cfLog.print(HServlet.SFH_INFO_3+path+HServlet.SFH_INFO_3_1+val);
                             temp = temp.substring(temp.indexOf("/", 10));
                             ViewHandler.reSendStaticFile(response,temp,fileName,contentType,FrameworkMemoryStorage.staticFileLogSwitch);
                             return true;
@@ -106,14 +106,14 @@ public final class StaticFileHandle {
                     String endd = val.substring(1);
                     if (endName.equals(endd)){
                         if(FrameworkMemoryStorage.staticFileLogSwitch)
-                            cfLog.print("文件解析为'后缀名匹配'，文件名："+fileName+" 配置："+val);
+                            cfLog.print(HServlet.SFH_INFO_4+fileName+HServlet.SFH_INFO_3_1+val);
                         temp = temp.substring(temp.indexOf("/", 10));
                         ViewHandler.reSendStaticFile(response,temp,fileName,contentType,FrameworkMemoryStorage.staticFileLogSwitch);
                         return true;
                     }
                 }
             }
-            cfLog.war("路径(文件)："+path+"在配置文件中没有解析配置！默认返回404错误！");
+            cfLog.war(HServlet.SFH_INFO_5+path+HServlet.SFH_INFO_6);
         }
 
 
@@ -121,7 +121,7 @@ public final class StaticFileHandle {
         //对于没有找到的静态内容，判断是不是文件，不是文件就返回没有接口
         String lastName = temp.substring(temp.lastIndexOf(".")+1);
         if(FrameworkMemoryStorage.staticFileLogSwitch)
-            cfLog.war("访问的文件不存在："+temp+"，后缀为："+lastName);
+            cfLog.war(HServlet.SFH_INFO_7+temp+HServlet.SFH_INFO_7_1+lastName);
         if(HttpHelper.isMIME(lastName)) {
             try {
                 ViewHandler.reSendErrorCode(response,404);

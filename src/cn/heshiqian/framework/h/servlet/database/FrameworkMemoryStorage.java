@@ -1,5 +1,7 @@
 package cn.heshiqian.framework.h.servlet.database;
 
+import cn.heshiqian.framework.s.xconf.pojo.XConfTree;
+
 import javax.servlet.ServletContext;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,4 +30,5 @@ public final class FrameworkMemoryStorage {
 
     public static int filterType=HServlet.FILER_TYPE_AUTO;
     public static String filterCustomContent="";
+    public static XConfTree mainConfigure=null;
 }

@@ -3,6 +3,7 @@ package cn.heshiqian.framework.h.servlet.view;
 import cn.heshiqian.framework.h.cflog.core.CFLog;
 
 import cn.heshiqian.framework.h.servlet.database.FrameworkMemoryStorage;
+import cn.heshiqian.framework.h.servlet.database.HServlet;
 import cn.heshiqian.framework.h.servlet.pojo.VO;
 import cn.heshiqian.framework.h.servlet.startup.ContextScanner;
 import cn.heshiqian.framework.h.servlet.tools.HttpHelper;
@@ -26,7 +27,7 @@ public final class ViewHandler {
 
     private void analysis(Object rs, HttpServletResponse response, Cookie[] cookies, boolean isMapToFile, String fileName) {
         if (rs == null) {
-            HttpHelper.sendErr(response, "警告！方法没有返回值。此警告不影响流程执行，只是系统返回！<br>如果希望不再出现此提示，请在返回方法上注解@NullReturn");
+            HttpHelper.sendErr(response, HServlet.NULL_RETURN_WARING);
             return;
         }
 
@@ -40,14 +41,14 @@ public final class ViewHandler {
                 if (vo.isTemplate()) {
                     String templateFile = vo.getTemplateFile();
                     if ("".equals(templateFile)) {
-                        HttpHelper.sendErr(response, "此接口返回的VO设置了模板模式，但是你没有设置任何对应的文件名，请使用setTemplateFile方法设置！");
+                        HttpHelper.sendErr(response, HServlet.VO_FORMAT_ERROR);
                     } else {
                         File fDir = new File(ContextScanner.getContext().getRealPath(FrameworkMemoryStorage.staticFilePath));
                         String path = Tool.FileFinder.find(fDir, vo.getTemplateFile());
                         if("none".equals(path)){
-                            HttpHelper.sendErr(response,"文件不存在! 文件名："+vo.getTemplateFile()+" 详细请查看后台Log");
-                            cfLog.err("文件不存在："+vo.getTemplateFile()+" 若你使用VO对象返回，请在设置模板文件时，不要添加任何'/'来指定相对路径，系统会自动查找是否有对应名称的文件！");
-                            cfLog.err("查找路径："+fDir.getAbsolutePath());
+                            HttpHelper.sendErr(response,HServlet.FILE_NOT_FIND_ERROR_1 + vo.getTemplateFile()+HServlet.FILE_NOT_FIND_ERROR_2);
+                            cfLog.err(HServlet.FILE_NOT_FIND_ERROR_3+vo.getTemplateFile()+HServlet.FILE_NOT_FIND_ERROR_4);
+                            cfLog.err(HServlet.FILE_NOT_FIND_ERROR_5+fDir.getAbsolutePath());
                         }
                         String s = Tool.FileReadByUTF8(path);
                         HashMap<String, Object> map = vo.getMap();
@@ -73,7 +74,7 @@ public final class ViewHandler {
         }else {
             //没有加注解的情况
             if (rs instanceof VO){
-                HttpHelper.sendErr(response,"此方法返回为VO对象，需在方法上加注解MapToFile以支持VO对象返回！");
+                HttpHelper.sendErr(response,HServlet.VO_RETURN_ERROR);
                 return;
             }
             HttpHelper.sendNormal(response,rs.toString());
@@ -100,21 +101,21 @@ public final class ViewHandler {
                 JSONArray jsonArray = JSONArray.fromObject(rs);
                 HttpHelper.sendJson(response,jsonArray.toString());
             }catch (JSONException e){
-                HttpHelper.sendErr(response,"JSON生成异常！<br>"+e.getMessage());
+                HttpHelper.sendErr(response,HServlet.JSON_FORMAT_ERROR+e.getMessage());
             }
         }else if (rs instanceof Collection<?>){
             try {
                 JSONArray jsonArray = JSONArray.fromObject(rs);
                 HttpHelper.sendJson(response,jsonArray.toString());
             }catch (JSONException e){
-                HttpHelper.sendErr(response,"JSON生成异常！<br>"+e.getMessage());
+                HttpHelper.sendErr(response,HServlet.JSON_FORMAT_ERROR+e.getMessage());
             }
         }else {
             try {
                 JSONObject jsonObject = JSONObject.fromObject(rs);
                 HttpHelper.sendJson(response,jsonObject.toString());
             }catch (JSONException e){
-                HttpHelper.sendErr(response,"JSON生成异常！<br>"+e.getMessage());
+                HttpHelper.sendErr(response,HServlet.JSON_FORMAT_ERROR+e.getMessage());
             }
         }
     }
@@ -122,11 +123,11 @@ public final class ViewHandler {
 
     public static void reSendStaticFile(HttpServletResponse response,String fileURI,String fileName,String head,boolean printLog){
         if(printLog){
-            cfLog.war("静态文件访问："+fileURI);
-            cfLog.war("收到的头："+head);
+            cfLog.war(HServlet.STATIC_LOG_1+fileURI);
+            cfLog.war(HServlet.STATIC_LOG_2+head);
         }
-        String fileLastName=fileName.substring(fileName.lastIndexOf(".")+1,fileName.length());
-        String fileURL=FrameworkMemoryStorage.staticFileDir+fileURI.substring(1,fileURI.length());
+        String fileLastName=fileName.substring(fileName.lastIndexOf(".")+1);
+        String fileURL=FrameworkMemoryStorage.staticFileDir+fileURI.substring(1);
 
         if(head.equals("*/*")){
             //不设置头部发送，全接受型

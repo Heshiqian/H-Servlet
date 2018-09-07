@@ -6,6 +6,7 @@ import cn.heshiqian.framework.h.cflog.core.CFLog;
 import cn.heshiqian.framework.h.servlet.annotation.*;
 import cn.heshiqian.framework.h.servlet.classs.ClassManage;
 import cn.heshiqian.framework.h.servlet.classs.ClassPool;
+import cn.heshiqian.framework.h.servlet.database.FrameworkMemoryStorage;
 import cn.heshiqian.framework.h.servlet.database.HServlet;
 import cn.heshiqian.framework.h.servlet.tools.HttpHelper;
 import cn.heshiqian.framework.h.servlet.pojo.RequestMethod;
@@ -14,6 +15,7 @@ import cn.heshiqian.framework.h.servlet.view.ViewHandler;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -28,7 +30,7 @@ public final class CenterHandle {
     public void distributor(int methodCode, String url, HttpServletRequest request, HttpServletResponse response, Cookie[] cookies, HashMap<String, String> keyMap) {
         Class cclass = ClassManage.checkClassWasInit(url);
         if (cclass == null) {
-            HttpHelper.sendErr(response, "没有此接口!");
+            HttpHelper.sendErr(response, HServlet.HANDLE_CENTER_NO_INTERFACE);
             return;
         }
         try {
@@ -46,10 +48,10 @@ public final class CenterHandle {
             }
         } catch (Exception e) {
             String errMsg = "";
-            errMsg += "<span style=\"font-size:16px;color:#6c1003;font-weight:bold\">" + e + "</span><br>";
+            errMsg += HServlet.HANDLE_EXCEPTION_PART_1 + e + HServlet.HANDLE_EXCEPTION_PART_2;
             StackTraceElement[] stackTrace = e.getStackTrace();
             for (StackTraceElement s : stackTrace) {
-                errMsg += "<span style=\"font-size:12px;color:#333\">类：" + s.getClassName() + "中，方法：" + s.getMethodName() + "，第：" + s.getLineNumber() + "行</span><br>";
+                errMsg += HServlet.HANDLE_EXCEPTION_PART_3 + s.getClassName() + HServlet.HANDLE_EXCEPTION_PART_4 + s.getMethodName() + HServlet.HANDLE_EXCEPTION_PART_5 + s.getLineNumber() + HServlet.HANDLE_EXCEPTION_PART_6;
             }
             HttpHelper.sendErr(response, errMsg);
             e.printStackTrace();
@@ -79,7 +81,7 @@ public final class CenterHandle {
                                 objs.add(oldJSON);
                             } else {
                                 objs.add(null);
-                                cfLog.war("方法中参数：" + p.getName() + "没有实际注解，框架没有处理，默认传入null占位！请自行判断！");
+                                cfLog.war(HServlet.HANDLE_DISPATCHER_INFO_1 + p.getName() + HServlet.HANDLE_DISPATCHER_INFO_2);
                             }
                         }
                         //执行结果，交由视图Handler处理
@@ -89,14 +91,14 @@ public final class CenterHandle {
                         if (nullReturn != null) {
                             //方法注解了空返回，不交由视图Handler处理，直接返回空
                             if (invokeResult != null) {
-                                HttpHelper.sendErr(response, "函数：" + c.getTypeName() + "." + m.getName() + "()有返回值，但是你注解了@NullReturn，请去除，此注解将忽略所有返回值！");
+                                HttpHelper.sendErr(response, HServlet.HANDLE_DISPATCHER_INFO_3+ c.getTypeName() + "." + m.getName() + HServlet.HANDLE_DISPATCHER_INFO_4 );
                             }
                             return;
                         }
                         MapToFile mapToFile = m.getAnnotation(MapToFile.class);
                         ResponseBody responseBody = m.getAnnotation(ResponseBody.class);
                         if (mapToFile != null && responseBody != null) {
-                            HttpHelper.sendErr(response, "@MapToFile与@ResponseBody在返回中，只能选择其中一种！请修改：" + c.getTypeName() + "中" + m.getName() + "方法！");
+                            HttpHelper.sendErr(response, HServlet.HANDLE_DISPATCHER_INFO_5 + c.getTypeName() + HServlet.HANDLE_DISPATCHER_INFO_5_1 + m.getName() + HServlet.HANDLE_DISPATCHER_INFO_5_2);
                         }
 
                         if (mapToFile != null) {
@@ -143,7 +145,7 @@ public final class CenterHandle {
                                 //这个变量为变量key
                                 String val = keyMap.get(param.key());
                                 if (val == null)
-                                    cfLog.err("请求url中不含有key为：" + param.key() + "的值！");
+                                    cfLog.err( HServlet.HANDLE_DISPATCHER_INFO_6+ param.key() + HServlet.HANDLE_DISPATCHER_INFO_6_1);
                                 objs.add(val);
                             } else if (textString != null) {
                                 //这个变量不做处理，原文发送
@@ -154,7 +156,7 @@ public final class CenterHandle {
                                 objs.add(fullPath);
                             } else {
                                 objs.add(null);
-                                cfLog.war("方法中参数：" + p.getName() + "没有实际注解，框架没有处理，默认传入null占位！请自行判断！");
+                                cfLog.war(HServlet.HANDLE_DISPATCHER_INFO_1 + p.getName() + HServlet.HANDLE_DISPATCHER_INFO_2);
                             }
                         }
                         //执行结果，交由视图Handler处理
@@ -164,14 +166,14 @@ public final class CenterHandle {
                         if (nullReturn != null) {
                             //方法注解了空返回，不交由视图Handler处理，直接返回空
                             if (invokeResult != null) {
-                                HttpHelper.sendErr(response, "函数：" + c.getTypeName() + "." + m.getName() + "()有返回值，但是你注解了@NullReturn，请去除，此注解将忽略所有返回值！");
+                                HttpHelper.sendErr(response, HServlet.HANDLE_DISPATCHER_INFO_3 + c.getTypeName() + "." + m.getName() + HServlet.HANDLE_DISPATCHER_INFO_4);
                             }
                             return;
                         }
                         MapToFile mapToFile = m.getAnnotation(MapToFile.class);
                         ResponseBody responseBody = m.getAnnotation(ResponseBody.class);
                         if (mapToFile != null && responseBody != null) {
-                            HttpHelper.sendErr(response, "@MapToFile与@ResponseBody在返回中，只能选择其中一种！请修改：" + c.getTypeName() + "中" + m.getName() + "方法！");
+                            HttpHelper.sendErr(response, HServlet.HANDLE_DISPATCHER_INFO_5 + c.getTypeName() + HServlet.HANDLE_DISPATCHER_INFO_5_1 + m.getName() + HServlet.HANDLE_DISPATCHER_INFO_5_2);
                         }
 
                         if (mapToFile != null) {
@@ -198,12 +200,23 @@ public final class CenterHandle {
 
 
     private void callMethodErr(HttpServletResponse response,int code){
+
+        boolean enableRequestErrorTip = Boolean.valueOf(FrameworkMemoryStorage.mainConfigure.getRootByName("server").getLeafByName("enableRequestErrorTip").getValue());
+
+        if (!enableRequestErrorTip) {
+            try {
+                ViewHandler.reSendErrorCode(response,405);
+            } catch (IOException e) {
+            }
+            return;
+        }
+
         switch (code){
             case RequestMethod.GET:
-                HttpHelper.sendErr(response, "请求方式错误！此方法请求方式应为GET");
+                HttpHelper.sendErr(response, HServlet.HANDLE_REQUEST_METHOD_ERROR_GET);
                 break;
             case RequestMethod.POST:
-                HttpHelper.sendErr(response, "请求方式错误！此方法请求方式应为POST");
+                HttpHelper.sendErr(response, HServlet.HANDLE_REQUEST_METHOD_ERROR_POST);
                 break;
         }
     }

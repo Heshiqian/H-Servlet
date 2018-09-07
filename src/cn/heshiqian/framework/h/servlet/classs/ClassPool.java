@@ -3,10 +3,12 @@ package cn.heshiqian.framework.h.servlet.classs;
 import cn.heshiqian.framework.h.cflog.core.CFLog;
 
 import cn.heshiqian.framework.h.servlet.annotation.RequestUrl;
+import cn.heshiqian.framework.h.servlet.database.HServlet;
 import cn.heshiqian.framework.h.servlet.exception.NotExistInitClassException;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public final class ClassPool {
 
@@ -40,7 +42,7 @@ public final class ClassPool {
                 if (o.getClass().getTypeName().equals(c.getTypeName()))
                     return o;
             }
-            throw new NotExistInitClassException("在类池中不存在传入的类！");
+            throw new NotExistInitClassException(HServlet.CLASS_POOL_ERROR);
         }
     }
 

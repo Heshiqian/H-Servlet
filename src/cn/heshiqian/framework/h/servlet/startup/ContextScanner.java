@@ -120,6 +120,7 @@ public final class ContextScanner {
         String path = Tool.FileFinder.find(file, "configuration.conf");
         System.out.println(path);
         XConfTree confTree = XConf.read(path);
+        FrameworkMemoryStorage.mainConfigure=confTree;
         //获取配置
         String staticFilePath = confTree.getRootByName("server").getLeafByName("staticFilePath").getValue();
         boolean staticFileLog = Boolean.valueOf(confTree.getRootByName("server").getLeafByName("enableStaticFileLog").getValue());

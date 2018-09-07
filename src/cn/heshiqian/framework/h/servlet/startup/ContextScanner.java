@@ -144,6 +144,9 @@ public final class ContextScanner {
         FrameworkMemoryStorage.staticFilePath = staticFilePath;
         FrameworkMemoryStorage.staticFileDir = ContextScanner.getContext().getRealPath(staticFilePath);
         FrameworkMemoryStorage.staticFileLogSwitch=staticFileLog;
+        FrameworkMemoryStorage.enableRequestErrorTip = Boolean.valueOf(FrameworkMemoryStorage.mainConfigure.getRootByName("server").getLeafByName("enableRequestErrorTip").getValue());
+        FrameworkMemoryStorage.disabledNullReturnWaring = Boolean.valueOf(FrameworkMemoryStorage.mainConfigure.getRootByName("server").getLeafByName("disabledNullReturnWaring").getValue());
+
 
         //静态配置
         String filterType = confTree.getRootByName("static").getLeafByName("filterType").getValue();

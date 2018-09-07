@@ -90,7 +90,11 @@ public final class CenterHandle {
                         if (nullReturn != null) {
                             //方法注解了空返回，不交由视图Handler处理，直接返回空
                             if (invokeResult != null) {
-                                HttpHelper.sendErr(response, HServlet.HANDLE_DISPATCHER_INFO_3+ c.getTypeName() + "." + m.getName() + HServlet.HANDLE_DISPATCHER_INFO_4 );
+                                if(FrameworkMemoryStorage.disabledNullReturnWaring){
+                                    HttpHelper.sendCustomTitle(response,"text","");
+                                    return;
+                                }
+                                HttpHelper.sendErr(response, HServlet.HANDLE_DISPATCHER_INFO_3 + c.getTypeName() + "." + m.getName() + HServlet.HANDLE_DISPATCHER_INFO_4);
                             }
                             return;
                         }
@@ -165,6 +169,10 @@ public final class CenterHandle {
                         if (nullReturn != null) {
                             //方法注解了空返回，不交由视图Handler处理，直接返回空
                             if (invokeResult != null) {
+                                if(FrameworkMemoryStorage.disabledNullReturnWaring){
+                                    HttpHelper.sendCustomTitle(response,"text","");
+                                    return;
+                                }
                                 HttpHelper.sendErr(response, HServlet.HANDLE_DISPATCHER_INFO_3 + c.getTypeName() + "." + m.getName() + HServlet.HANDLE_DISPATCHER_INFO_4);
                             }
                             return;
@@ -199,17 +207,13 @@ public final class CenterHandle {
 
 
     private void callMethodErr(HttpServletResponse response,int code){
-
-        boolean enableRequestErrorTip = Boolean.valueOf(FrameworkMemoryStorage.mainConfigure.getRootByName("server").getLeafByName("enableRequestErrorTip").getValue());
-
-        if (!enableRequestErrorTip) {
+        if (!FrameworkMemoryStorage.enableRequestErrorTip) {
             try {
                 ViewHandler.reSendErrorCode(response,405);
             } catch (IOException e) {
             }
             return;
         }
-
         switch (code){
             case RequestMethod.GET:
                 HttpHelper.sendErr(response, HServlet.HANDLE_REQUEST_METHOD_ERROR_GET);

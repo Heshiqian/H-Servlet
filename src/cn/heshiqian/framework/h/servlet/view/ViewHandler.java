@@ -44,8 +44,11 @@ public final class ViewHandler {
                     } else {
                         File fDir = new File(ContextScanner.getContext().getRealPath(FrameworkMemoryStorage.staticFilePath));
                         String path = Tool.FileFinder.find(fDir, vo.getTemplateFile());
-                        if("none".equals(path))
-                            HttpHelper.sendErr(response,"文件不存在! 文件名："+vo.getTemplateFile()+" 查找路径："+fDir.getAbsolutePath());
+                        if("none".equals(path)){
+                            HttpHelper.sendErr(response,"文件不存在! 文件名："+vo.getTemplateFile()+" 详细请查看后台Log");
+                            cfLog.err("文件不存在："+vo.getTemplateFile()+" 若你使用VO对象返回，请在设置模板文件时，不要添加任何'/'来指定相对路径，系统会自动查找是否有对应名称的文件！");
+                            cfLog.err("查找路径："+fDir.getAbsolutePath());
+                        }
                         String s = Tool.FileReadByUTF8(path);
                         HashMap<String, Object> map = vo.getMap();
                         if (map.size() == 0) {

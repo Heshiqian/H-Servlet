@@ -2,17 +2,25 @@ package cn.heshiqian.framework.h.servlet.handler;
 
 import cn.heshiqian.framework.h.cflog.core.CFLog;
 import cn.heshiqian.framework.h.servlet.database.FrameworkMemoryStorage;
+import cn.heshiqian.framework.h.servlet.database.HServlet;
 import cn.heshiqian.framework.h.servlet.tools.HttpHelper;
+import cn.heshiqian.framework.h.servlet.tools.Tool;
 import cn.heshiqian.framework.h.servlet.view.ViewHandler;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
 
 public final class StaticFileHandle {
 
-
+    private static IdentityHashMap<String,String> diyMapping=new IdentityHashMap<>();
     private static StaticFileHandle staticFileHandle;
     private static CFLog cfLog=new CFLog(StaticFileHandle.class);
     private static ArrayList<String> staticFileList;
@@ -27,26 +35,93 @@ public final class StaticFileHandle {
     }
 
     public static void prepare(ArrayList<String> staticFileList){
-        staticFileHandle.staticFileList=staticFileList;
+        StaticFileHandle.staticFileList =staticFileList;
+        if(FrameworkMemoryStorage.filterType == HServlet.FILER_TYPE_CUSTOM){
+            String confJson=FrameworkMemoryStorage.filterCustomContent;
+            if(confJson==null||confJson.equals("")){
+                cfLog.err("配置信息为空！请检查'filterList'键值！");
+                return;
+            }
+            try{
+                JSONArray jsonArray = JSONArray.fromObject(confJson.trim());
+                for(int i=0;i<jsonArray.size();i++){
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    diyMapping.put(jsonObject.getString("type"),jsonObject.getString("value"));
+                }
+                cfLog.info("自定配置解析完毕！");
+                cfLog.print(diyMapping.toString());
+            }catch (JSONException e){
+                e.printStackTrace();
+                cfLog.err("自定义配置解析失败！使用默认配置：'自动'");
+            }
+        }
     }
 
     public static boolean filter(HttpServletRequest request, HttpServletResponse response){
-        //todo 这里应该吧所有的静态文件过滤掉
         String temp = request.getRequestURL().toString();
-        String fileName=temp.substring(temp.lastIndexOf("/"),temp.length());
-        temp=temp.substring(temp.indexOf("/", 10),temp.length());
-        for(String s : staticFileList){
-            if(s.equals(temp)){
-                String contentType = request.getHeader("Accept").split(",")[0];
-                ViewHandler.reSendStaticFile(response,temp,fileName,contentType, FrameworkMemoryStorage.staticFileLogSwitch);
-                return true;
+        String contentType = request.getHeader("Accept").split(",")[0];
+        //关闭模式
+        if(FrameworkMemoryStorage.filterType==HServlet.FILER_TYPE_OFF)
+            return false;
+
+        //自动模式
+        if(FrameworkMemoryStorage.filterType==HServlet.FILER_TYPE_AUTO) {
+            String fileName = temp.substring(temp.lastIndexOf("/"));
+            temp = temp.substring(temp.indexOf("/", 10));
+            for (String s : staticFileList) {
+                if (s.equals(temp)) {
+                    ViewHandler.reSendStaticFile(response, temp, fileName, contentType, FrameworkMemoryStorage.staticFileLogSwitch);
+                    return true;
+                }
             }
         }
+
+        //自定义模式
+        if(FrameworkMemoryStorage.filterType==HServlet.FILER_TYPE_CUSTOM){
+            String path = temp.substring(temp.indexOf(FrameworkMemoryStorage.ServerPort) + FrameworkMemoryStorage.ServerPort.length());
+            int i = path.lastIndexOf(".");
+            if(i==-1)
+                return false;
+            String endName = path.substring(i);
+            Iterator<String> iterator = diyMapping.keySet().iterator();
+            while (iterator.hasNext()){
+                String key = iterator.next();
+                String val = diyMapping.get(key);
+                if("address".equals(key)){
+                    //按照路径解析
+                    if(path.indexOf(val)==0){
+                        String fileName = path.substring(path.lastIndexOf("/"));
+                        File file = new File(FrameworkMemoryStorage.staticFileDir + val);
+                        if(file.exists()&&file.isDirectory()) {
+                            if(FrameworkMemoryStorage.staticFileLogSwitch)
+                                cfLog.print("文件解析为'路径匹配'，路径："+path+" 配置："+val);
+                            temp = temp.substring(temp.indexOf("/", 10));
+                            ViewHandler.reSendStaticFile(response,temp,fileName,contentType,FrameworkMemoryStorage.staticFileLogSwitch);
+                            return true;
+                        }
+                    }
+                }else if("extensions".equals(key)){
+                    //按照后缀解析
+                    String fileName = path.substring(path.lastIndexOf("/")+1);
+                    String endd = val.substring(1);
+                    if (endName.equals(endd)){
+                        if(FrameworkMemoryStorage.staticFileLogSwitch)
+                            cfLog.print("文件解析为'后缀名匹配'，文件名："+fileName+" 配置："+val);
+                        temp = temp.substring(temp.indexOf("/", 10));
+                        ViewHandler.reSendStaticFile(response,temp,fileName,contentType,FrameworkMemoryStorage.staticFileLogSwitch);
+                        return true;
+                    }
+                }
+            }
+            cfLog.war("路径(文件)："+path+"在配置文件中没有解析配置！默认返回404错误！");
+        }
+
+
+
         //对于没有找到的静态内容，判断是不是文件，不是文件就返回没有接口
-        String lastName = temp.substring(temp.lastIndexOf(".")+1, temp.length());
+        String lastName = temp.substring(temp.lastIndexOf(".")+1);
         if(FrameworkMemoryStorage.staticFileLogSwitch)
             cfLog.war("访问的文件不存在："+temp+"，后缀为："+lastName);
-
         if(HttpHelper.isMIME(lastName)) {
             try {
                 ViewHandler.reSendErrorCode(response,404);
@@ -54,7 +129,7 @@ public final class StaticFileHandle {
             }
             return true;
         }
-
+        //不是静态文件
         return false;
     }
 

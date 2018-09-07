@@ -3,6 +3,7 @@ package cn.heshiqian.framework.h.servlet.startup;
 import cn.heshiqian.framework.h.cflog.core.CFLog;
 
 import cn.heshiqian.framework.h.servlet.database.FrameworkMemoryStorage;
+import cn.heshiqian.framework.h.servlet.database.HServlet;
 import cn.heshiqian.framework.h.servlet.exception.NotExistInitParameterException;
 import cn.heshiqian.framework.h.servlet.tools.Tool;
 import cn.heshiqian.framework.s.xconf.XConf;
@@ -142,6 +143,22 @@ public final class ContextScanner {
         FrameworkMemoryStorage.staticFilePath = staticFilePath;
         FrameworkMemoryStorage.staticFileDir = ContextScanner.getContext().getRealPath(staticFilePath);
         FrameworkMemoryStorage.staticFileLogSwitch=staticFileLog;
+
+        //静态配置
+        String filterType = confTree.getRootByName("static").getLeafByName("filterType").getValue();
+        cfLog.info("静态代理模式："+filterType);
+        if("custom".equals(filterType)) {
+            FrameworkMemoryStorage.filterType = HServlet.FILER_TYPE_CUSTOM;
+            try {
+                FrameworkMemoryStorage.filterCustomContent = confTree.getRootByName("static").getLeafByName("filterList").getValue();
+            }catch (RuntimeException e){
+                cfLog.err("缺少'filterList'键值！现在配置的模式为'自定义'，请配置'filterList'！已自动切换为'自动'模式！");
+                FrameworkMemoryStorage.filterType = HServlet.FILER_TYPE_AUTO;
+            }
+        }
+        if("off".equals(filterType)) {
+            FrameworkMemoryStorage.filterType = HServlet.FILER_TYPE_OFF;
+        }
 
         //对静态文件的扫描
         cfLog.info("设置的静态目录：" + FrameworkMemoryStorage.staticFileDir);

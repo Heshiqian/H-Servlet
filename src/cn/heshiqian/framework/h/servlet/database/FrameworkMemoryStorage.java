@@ -25,4 +25,7 @@ public final class FrameworkMemoryStorage {
     public static boolean staticFileLogSwitch=false;
 
     public static ArrayList<String> fileList;
+
+    public static int filterType=HServlet.FILER_TYPE_AUTO;
+    public static String filterCustomContent="";
 }

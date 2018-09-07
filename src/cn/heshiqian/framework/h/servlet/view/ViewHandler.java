@@ -1,6 +1,6 @@
 package cn.heshiqian.framework.h.servlet.view;
 
-import cn.heshiqian.framework.h.cflog.core.CFLog;
+import cn.heshiqian.framework.h.cflog.core.*;
 
 import cn.heshiqian.framework.h.servlet.database.FrameworkMemoryStorage;
 import cn.heshiqian.framework.h.servlet.database.HServlet;
@@ -23,7 +23,7 @@ import java.util.Iterator;
 
 public final class ViewHandler {
 
-    private static CFLog cfLog=new CFLog(ViewHandler.class);
+    private static Logger cfLog=CFLog.logger(ViewHandler.class);
 
     private void analysis(Object rs, HttpServletResponse response, Cookie[] cookies, boolean isMapToFile, String fileName) {
         if (rs == null) {

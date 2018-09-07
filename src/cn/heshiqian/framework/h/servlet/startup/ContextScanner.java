@@ -1,6 +1,6 @@
 package cn.heshiqian.framework.h.servlet.startup;
 
-import cn.heshiqian.framework.h.cflog.core.CFLog;
+import cn.heshiqian.framework.h.cflog.core.*;
 
 import cn.heshiqian.framework.h.servlet.database.FrameworkMemoryStorage;
 import cn.heshiqian.framework.h.servlet.database.HServlet;
@@ -25,7 +25,7 @@ import java.util.*;
 
 public final class ContextScanner {
 
-    private static CFLog cfLog=new CFLog(ContextScanner.class);
+    private static Logger cfLog=CFLog.logger(ContextScanner.class);
     private static ServletContext context;
     private static ContextScanner contextScanner;
     private static ArrayList<String> fileList;

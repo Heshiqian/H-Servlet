@@ -1,6 +1,6 @@
 package cn.heshiqian.framework.h.servlet.handler;
 
-import cn.heshiqian.framework.h.cflog.core.CFLog;
+import cn.heshiqian.framework.h.cflog.core.*;
 import cn.heshiqian.framework.h.servlet.database.FrameworkMemoryStorage;
 import cn.heshiqian.framework.h.servlet.database.HServlet;
 import cn.heshiqian.framework.h.servlet.tools.HttpHelper;
@@ -22,7 +22,7 @@ public final class StaticFileHandle {
 
     private static IdentityHashMap<String,String> diyMapping=new IdentityHashMap<>();
     private static StaticFileHandle staticFileHandle;
-    private static CFLog cfLog=new CFLog(StaticFileHandle.class);
+    private static Logger cfLog=CFLog.logger(StaticFileHandle.class);
     private static ArrayList<String> staticFileList;
 
     public static StaticFileHandle newInstance(){

@@ -1,6 +1,6 @@
 package cn.heshiqian.framework.h.servlet.classs;
 
-import cn.heshiqian.framework.h.cflog.core.CFLog;
+import cn.heshiqian.framework.h.cflog.core.*;
 
 import cn.heshiqian.framework.h.servlet.annotation.RequestUrl;
 import cn.heshiqian.framework.h.servlet.database.HServlet;
@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public final class ClassPool {
 
-    private static CFLog cfLog=new CFLog(ClassPool.class);
+    private static Logger cfLog=CFLog.logger(ClassPool.class);
     private static ArrayList<Object> initClasses=new ArrayList<>();
 
 

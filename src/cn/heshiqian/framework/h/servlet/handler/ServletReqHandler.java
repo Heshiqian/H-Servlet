@@ -1,6 +1,6 @@
 package cn.heshiqian.framework.h.servlet.handler;
 
-import cn.heshiqian.framework.h.cflog.core.CFLog;
+import cn.heshiqian.framework.h.cflog.core.*;
 import cn.heshiqian.framework.h.servlet.database.HServlet;
 import cn.heshiqian.framework.h.servlet.pojo.RequestMethod;
 import cn.heshiqian.framework.h.servlet.tools.HttpHelper;
@@ -20,7 +20,7 @@ public final class ServletReqHandler {
 
 
     private static Class mainServletClass;
-    private static CFLog cfLog=new CFLog(ServletReqHandler.class);
+    private static Logger cfLog=CFLog.logger(ServletReqHandler.class);
     private static CenterHandle centerHandle=new CenterHandle();
 
     public ServletReqHandler(Class main){

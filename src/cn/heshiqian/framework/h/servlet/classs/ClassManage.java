@@ -1,6 +1,6 @@
 package cn.heshiqian.framework.h.servlet.classs;
 
-import cn.heshiqian.framework.h.cflog.core.CFLog;
+import cn.heshiqian.framework.h.cflog.core.*;
 
 import cn.heshiqian.framework.h.servlet.database.HServlet;
 import cn.heshiqian.framework.h.servlet.startup.ClassScanner;
@@ -14,7 +14,7 @@ public final class ClassManage {
     private static ClassManage classManage;
     private static ClassScanner scanner;
     private static LifeRecycle lifeRecycle = new LifeRecycle();
-    private static CFLog cfLog=new CFLog(ClassManage.class);
+    private static Logger cfLog=CFLog.logger(ClassManage.class);
 
     private ClassManage() {
     }
@@ -87,7 +87,7 @@ public final class ClassManage {
 
     private static class LifeRecycle {
 
-        private CFLog cfLog = new CFLog(LifeRecycle.class);
+        private Logger cfLog=CFLog.logger(LifeRecycle.class);
 
         private HashMap<String, Integer> map = new HashMap<>();
         private TimerTask timerTask;

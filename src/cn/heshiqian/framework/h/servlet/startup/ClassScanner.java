@@ -1,6 +1,6 @@
 package cn.heshiqian.framework.h.servlet.startup;
 
-import cn.heshiqian.framework.h.cflog.core.CFLog;
+import cn.heshiqian.framework.h.cflog.core.*;
 
 import cn.heshiqian.framework.h.servlet.annotation.RequestUrl;
 
@@ -21,7 +21,7 @@ import java.util.jar.JarFile;
 public final class ClassScanner {
 
     private static ClassScanner scanner;
-    private static CFLog cfLog=new CFLog(ClassScanner.class);
+    private static Logger cfLog=CFLog.logger(ClassScanner.class);
     private static List<Class<?>> scanClasses = new ArrayList<>();
 
     private ClassScanner() {

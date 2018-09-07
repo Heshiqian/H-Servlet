@@ -1,6 +1,6 @@
 package javatest;
 
-import cn.heshiqian.framework.h.cflog.core.CFLog;
+import cn.heshiqian.framework.h.cflog.core.*;
 
 import cn.heshiqian.framework.h.servlet.tools.Tool;
 
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class m {
 
-    static CFLog cfLog=new CFLog(m.class);
+    static Logger cfLog=CFLog.logger(m.class);
 
     public static void main(String[] args) {
 

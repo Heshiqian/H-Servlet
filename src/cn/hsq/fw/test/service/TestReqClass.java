@@ -1,6 +1,7 @@
 package cn.hsq.fw.test.service;
 
-import cn.heshiqian.framework.h.cflog.core.CFLog;
+import cn.heshiqian.framework.h.cflog.core.*;
+import cn.heshiqian.framework.h.cflog.core.Logger;
 import cn.heshiqian.framework.h.servlet.annotation.*;
 import cn.heshiqian.framework.h.servlet.pojo.RequestMethod;
 import cn.heshiqian.framework.h.servlet.pojo.VO;
@@ -11,8 +12,7 @@ import java.util.Arrays;
 @Mapping
 public class TestReqClass {
 
-    private CFLog cfLog=new CFLog(TestReqClass.class);
-
+    private Logger cfLog=CFLog.logger(TestReqClass.class);
 
 //    @NullReturn
     @MapToFile //这个决定是否使用VO返回，VO的话，必须加这个，不加这个VO对象无效

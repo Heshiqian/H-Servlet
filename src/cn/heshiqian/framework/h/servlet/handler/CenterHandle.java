@@ -1,15 +1,14 @@
 package cn.heshiqian.framework.h.servlet.handler;
 
 
-import cn.heshiqian.framework.h.cflog.core.CFLog;
-
+import cn.heshiqian.framework.h.cflog.core.*;
 import cn.heshiqian.framework.h.servlet.annotation.*;
 import cn.heshiqian.framework.h.servlet.classs.ClassManage;
 import cn.heshiqian.framework.h.servlet.classs.ClassPool;
 import cn.heshiqian.framework.h.servlet.database.FrameworkMemoryStorage;
 import cn.heshiqian.framework.h.servlet.database.HServlet;
-import cn.heshiqian.framework.h.servlet.tools.HttpHelper;
 import cn.heshiqian.framework.h.servlet.pojo.RequestMethod;
+import cn.heshiqian.framework.h.servlet.tools.HttpHelper;
 import cn.heshiqian.framework.h.servlet.view.ViewHandler;
 
 import javax.servlet.http.Cookie;
@@ -24,7 +23,7 @@ import java.util.HashMap;
 
 public final class CenterHandle {
 
-    private CFLog cfLog=new CFLog(CenterHandle.class);
+    private Logger cfLog=CFLog.logger(CenterHandle.class);
     private static ViewHandler viewHandler = new ViewHandler();
 
     public void distributor(int methodCode, String url, HttpServletRequest request, HttpServletResponse response, Cookie[] cookies, HashMap<String, String> keyMap) {

@@ -1,6 +1,6 @@
 package cn.heshiqian.framework.h.servlet.servlet;
 
-import cn.heshiqian.framework.h.cflog.core.CFLog;
+import cn.heshiqian.framework.h.cflog.core.*;
 
 import cn.heshiqian.framework.h.servlet.classs.ClassManage;
 import cn.heshiqian.framework.h.servlet.database.FrameworkMemoryStorage;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 public final class MainProcessServlet extends HttpServlet {
 
-    private static CFLog cfLog=new CFLog(MainProcessServlet.class);
+    private static Logger cfLog=CFLog.logger(MainProcessServlet.class);
 
     private static ServletReqHandler servletReqHandler;
 

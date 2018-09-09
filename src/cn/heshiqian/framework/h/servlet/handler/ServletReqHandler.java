@@ -1,10 +1,12 @@
 package cn.heshiqian.framework.h.servlet.handler;
 
 import cn.heshiqian.framework.h.cflog.core.*;
+import cn.heshiqian.framework.h.servlet.database.FrameworkMemoryStorage;
 import cn.heshiqian.framework.h.servlet.database.HServlet;
 import cn.heshiqian.framework.h.servlet.pojo.RequestMethod;
 import cn.heshiqian.framework.h.servlet.tools.HttpHelper;
 import cn.heshiqian.framework.h.servlet.tools.Tool;
+import cn.heshiqian.framework.h.servlet.view.ViewHandler;
 import net.sf.json.JSONException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
@@ -65,7 +67,14 @@ public final class ServletReqHandler {
         boolean multipartContent = ServletFileUpload.isMultipartContent(request);
         if(multipartContent){
             //按照文件的方式处理
-
+            if(!FrameworkMemoryStorage.enableFileUpload){
+                try {
+                    ViewHandler.reSendErrorCode(response,405);
+                } catch (IOException e) {
+                }
+                cfLog.err("未配置文件上传功能！请在配置文件中修改！");
+                return;
+            }
         }else {
             //解析出POST请求的参数key和值
             HashMap<String,String> keyMap=new HashMap<>();

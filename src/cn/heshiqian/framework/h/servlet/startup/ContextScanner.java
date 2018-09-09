@@ -146,7 +146,7 @@ public final class ContextScanner {
         FrameworkMemoryStorage.staticFileLogSwitch=staticFileLog;
         FrameworkMemoryStorage.enableRequestErrorTip = Boolean.valueOf(FrameworkMemoryStorage.mainConfigure.getRootByName("server").getLeafByName("enableRequestErrorTip").getValue());
         FrameworkMemoryStorage.disabledNullReturnWaring = Boolean.valueOf(FrameworkMemoryStorage.mainConfigure.getRootByName("server").getLeafByName("disabledNullReturnWaring").getValue());
-
+        FrameworkMemoryStorage.enableFileUpload = Boolean.valueOf(FrameworkMemoryStorage.mainConfigure.getRootByName("server").getLeafByName("enableFileUpload").getValue());
 
         //静态配置
         String filterType = confTree.getRootByName("static").getLeafByName("filterType").getValue();

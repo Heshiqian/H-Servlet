@@ -24,4 +24,5 @@ public final class FrameworkMemoryStorage {
     public static boolean enableRequestErrorTip=false;
     public static boolean disabledNullReturnWaring=true;
     public static boolean enableFileUpload=false;
+    public static String ServerDomain="";
 }

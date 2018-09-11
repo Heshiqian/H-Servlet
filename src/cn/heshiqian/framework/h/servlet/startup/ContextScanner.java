@@ -50,6 +50,25 @@ public final class ContextScanner {
     public static void prepare(){
         String[] IPV4Address={};
 
+        //2018年9月6日10:11:23
+        //对conf文件进行解析，代替原来在MainServlet里面的代码
+        //2018年9月11日11:20:07
+        //换个位置
+
+        //对于类路径的配置还是使用web.xml
+        String classesPackagePath = ContextScanner.getContext().getInitParameter("classesPackagePath");
+
+        //获取到根目录
+        String home = context.getRealPath("/");
+        System.out.println(home);
+        File file = new File(home);
+
+        //找到conf文件
+        String path = Tool.FileFinder.find(file, "configuration.conf");
+        System.out.println(path);
+        XConfTree confTree = XConf.read(path);
+        FrameworkMemoryStorage.mainConfigure=confTree;
+
         //用NetworkInterface获取本地所有网络地址
         try {
             Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
@@ -88,39 +107,35 @@ public final class ContextScanner {
             }
 
             //存起来
+            FrameworkMemoryStorage.ServerDomain = FrameworkMemoryStorage.mainConfigure.getRootByName("server").getLeafByName("domain").getValue();
             FrameworkMemoryStorage.ServerPort=port;
             FrameworkMemoryStorage.ServerIps=IPV4Address;
             cfLog.print("本机IP："+Arrays.toString(IPV4Address));
             cfLog.print("服务器Port："+port);
-
+            if(FrameworkMemoryStorage.ServerDomain.equals("")){
+                cfLog.print("没有配置域名解析，不配置域名在使用访问时可能造成不能解析！");
+            }
         } catch (SocketException e) {
             e.printStackTrace();
             cfLog.err("在解析本地地址时出现错误！详见系统报错！");
         }
 
         //对服务器可本地访问的所有IP进行拼接
-        ArrayList<String> tempList=new ArrayList<>();
-        for(String s:IPV4Address){
-            tempList.add(s+":"+FrameworkMemoryStorage.ServerPort);
+        if(!(FrameworkMemoryStorage.ServerPort.equals("80")||FrameworkMemoryStorage.ServerPort.equals("443"))){
+            ArrayList<String> tempList=new ArrayList<>();
+            for(String s:IPV4Address){
+                tempList.add(s+":"+FrameworkMemoryStorage.ServerPort);
+            }
+            if(!FrameworkMemoryStorage.ServerDomain.equals(""))
+                tempList.add(FrameworkMemoryStorage.ServerDomain+":"+FrameworkMemoryStorage.ServerPort);
+            FrameworkMemoryStorage.allLocalIpAddress=tempList;
+        }else {
+            FrameworkMemoryStorage.allLocalIpAddress=new ArrayList<>();
+            FrameworkMemoryStorage.allLocalIpAddress.addAll(Arrays.asList(IPV4Address));
+            FrameworkMemoryStorage.allLocalIpAddress.add(FrameworkMemoryStorage.ServerDomain);
         }
-        FrameworkMemoryStorage.allLocalIpAddress=tempList;
 
-        //2018年9月6日10:11:23
-        //对conf文件进行解析，代替原来在MainServlet里面的代码
 
-        //对于类路径的配置还是使用web.xml
-        String classesPackagePath = ContextScanner.getContext().getInitParameter("classesPackagePath");
-
-        //获取到根目录
-        String home = context.getRealPath("/");
-        System.out.println(home);
-        File file = new File(home);
-
-        //找到conf文件
-        String path = Tool.FileFinder.find(file, "configuration.conf");
-        System.out.println(path);
-        XConfTree confTree = XConf.read(path);
-        FrameworkMemoryStorage.mainConfigure=confTree;
         //获取配置
         String staticFilePath = confTree.getRootByName("server").getLeafByName("staticFilePath").getValue();
         boolean staticFileLog = Boolean.valueOf(confTree.getRootByName("server").getLeafByName("enableStaticFileLog").getValue());
@@ -147,6 +162,7 @@ public final class ContextScanner {
         FrameworkMemoryStorage.enableRequestErrorTip = Boolean.valueOf(FrameworkMemoryStorage.mainConfigure.getRootByName("server").getLeafByName("enableRequestErrorTip").getValue());
         FrameworkMemoryStorage.disabledNullReturnWaring = Boolean.valueOf(FrameworkMemoryStorage.mainConfigure.getRootByName("server").getLeafByName("disabledNullReturnWaring").getValue());
         FrameworkMemoryStorage.enableFileUpload = Boolean.valueOf(FrameworkMemoryStorage.mainConfigure.getRootByName("server").getLeafByName("enableFileUpload").getValue());
+
 
         //静态配置
         String filterType = confTree.getRootByName("static").getLeafByName("filterType").getValue();

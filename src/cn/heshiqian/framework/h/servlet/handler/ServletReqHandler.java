@@ -34,10 +34,14 @@ public final class ServletReqHandler {
 
     public void GetHandler(HttpServletRequest request, HttpServletResponse response){
         //这里开始都是分割请求地址
-        String serverPort = String.valueOf(request.getServerPort());
-        String requestURL = request.getRequestURL().toString();
-        requestURL=requestURL.substring(requestURL.indexOf(serverPort)+serverPort.length(),requestURL.length());
-
+//        String serverPort = String.valueOf(request.getServerPort());
+        String requestURLa = request.getRequestURL().toString();
+//        requestURL=requestURL.substring(requestURL.indexOf(serverPort)+serverPort.length(),requestURL.length());
+        String requestURL=splitURL(requestURLa);
+        if(requestURL==null){
+            cfLog.err("地址解析错误=URL:"+requestURLa);
+            throw new RuntimeException("地址解析错误！");
+        }
         //去除浏览器的favicon.ico请求
         if(checkIconFile(requestURL)) return;
         //单'/'处理首页
@@ -58,9 +62,14 @@ public final class ServletReqHandler {
 
     public void PostHandler(HttpServletRequest request, HttpServletResponse response){
         //这里开始都是分割请求地址
-        String serverPort = String.valueOf(request.getServerPort());
-        String requestURL = request.getRequestURL().toString();
-        requestURL=requestURL.substring(requestURL.indexOf(serverPort)+serverPort.length(),requestURL.length());
+//        String serverPort = String.valueOf(request.getServerPort());
+        String requestURLa = request.getRequestURL().toString();
+//        requestURL=requestURL.substring(requestURL.indexOf(serverPort)+serverPort.length());
+        String requestURL = splitURL(requestURLa);
+        if(requestURL==null){
+            cfLog.err("地址解析错误=URL:"+requestURLa);
+            throw new RuntimeException("地址解析错误！");
+        }
         cfLog.info("path:"+requestURL);
 
         //这里区分是文件还是正常的post提交
@@ -75,6 +84,7 @@ public final class ServletReqHandler {
                 cfLog.err("未配置文件上传功能！请在配置文件中修改！");
                 return;
             }
+            //todo 文件上传
         }else {
             //解析出POST请求的参数key和值
             HashMap<String,String> keyMap=new HashMap<>();
@@ -121,5 +131,14 @@ public final class ServletReqHandler {
 
     private boolean checkIconFile(String url){
         return url.contains(ICON_FILE_NAME);
+    }
+    private String splitURL(String url){
+        for(String s : FrameworkMemoryStorage.allLocalIpAddress){
+            if(url.contains(s)){
+                String substring = url.substring(url.indexOf(s) + s.length());
+                return substring;
+            }
+        }
+        return null;
     }
 }

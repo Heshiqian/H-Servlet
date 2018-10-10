@@ -4,12 +4,13 @@ import cn.heshiqian.framework.h.cflog.core.*;
 
 import cn.heshiqian.framework.h.servlet.database.FrameworkMemoryStorage;
 import cn.heshiqian.framework.h.servlet.database.HServlet;
+import cn.heshiqian.framework.h.servlet.exception.FileUploadConfigureException;
 import cn.heshiqian.framework.h.servlet.exception.NotExistInitParameterException;
+import cn.heshiqian.framework.h.servlet.file.FileFactory;
 import cn.heshiqian.framework.h.servlet.tools.Tool;
 import cn.heshiqian.framework.s.xconf.XConf;
 import cn.heshiqian.framework.s.xconf.pojo.XConfTree;
 import sun.net.util.IPAddressUtil;
-import sun.security.x509.IPAddressName;
 
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
@@ -18,6 +19,7 @@ import javax.management.Query;
 import javax.servlet.ServletContext;
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -163,7 +165,62 @@ public final class ContextScanner {
         FrameworkMemoryStorage.disabledNullReturnWaring = Boolean.valueOf(FrameworkMemoryStorage.mainConfigure.getRootByName("server").getLeafByName("disabledNullReturnWaring").getValue());
         FrameworkMemoryStorage.enableFileUpload = Boolean.valueOf(FrameworkMemoryStorage.mainConfigure.getRootByName("server").getLeafByName("enableFileUpload").getValue());
 
+        if(FrameworkMemoryStorage.enableFileUpload){
+            cfLog.info("已开启文件上传服务");
+            File up = new File(context.getRealPath("/WEB-INF") + "\\upload");
+            if(!up.exists())
+                up.mkdirs();
+            cfLog.info("文件存放地址："+up.getAbsolutePath());
+            FrameworkMemoryStorage.uploadFileSaveF=up;
+        }
 
+
+/*
+        if(FrameworkMemoryStorage.fileUploadHandlerClass.equals("")&&FrameworkMemoryStorage.enableFileUpload){
+            String uUrl = FrameworkMemoryStorage.mainConfigure.getRootByName("upload").getLeafByName("uploadURL").getValue();
+            uUrl = uUrl.replace("\\", "/");
+            if (uUrl.indexOf("/")!=0)
+                uUrl="/"+uUrl;
+            FrameworkMemoryStorage.fileUploadURL=uUrl;
+            if (uUrl.equals("")){
+                FrameworkMemoryStorage.fileUploadURL="/upload";
+                cfLog.war("你没有配置路径，默认使用："+FrameworkMemoryStorage.fileUploadURL);
+            }
+            cfLog.war("配置的文件上传路径："+uUrl);
+            String handleClassName = FrameworkMemoryStorage.mainConfigure.getRootByName("upload").getLeafByName("uploadProcessHandle").getValue();
+            if(handleClassName==null||handleClassName.trim().equals("")){
+                cfLog.err("服务类初始化失败！");
+                throw new FileUploadConfigureException("配置的文件上传处理类为空");
+            }
+            FrameworkMemoryStorage.fileUploadHandlerClass=handleClassName;
+            try {
+                Class<?> handleClass = Thread.currentThread().getContextClassLoader().loadClass(FrameworkMemoryStorage.fileUploadHandlerClass);
+                if(handleClass.getSuperclass().getTypeName().equals(FileUploadProcessFactory.class.getTypeName()))
+                    FrameworkMemoryStorage.fileUploadClassInstance = handleClass.newInstance();
+                else {
+                    FileUploadConfigureException ee = new FileUploadConfigureException("配置的类不是FileUploadProcessFactory的子类！");
+                    cfLog.err(ee.toString());
+                    cfLog.err("服务类初始化失败！");
+                    throw new IllegalStateException(ee);
+                }
+            } catch (ClassNotFoundException e) {
+                FileUploadConfigureException ee = new FileUploadConfigureException("配置的类无法找到", e);
+                cfLog.err(ee.toString());
+                cfLog.err("服务类初始化失败！");
+                throw new IllegalStateException(ee);
+            } catch (IllegalAccessException e) {
+                FileUploadConfigureException ee = new FileUploadConfigureException("配置的类无法访问，可能构造函数为私有", e);
+                cfLog.err(ee.toString());
+                cfLog.err("服务类初始化失败！");
+                throw new IllegalStateException(ee);
+            } catch (InstantiationException e) {
+                FileUploadConfigureException ee = new FileUploadConfigureException("配置的类可能是个接口或抽象类，无法实例化", e);
+                cfLog.err(ee.toString());
+                cfLog.err("服务类初始化失败！");
+                throw new IllegalStateException(ee);
+            }
+        }
+*/
         //静态配置
         String filterType = confTree.getRootByName("static").getLeafByName("filterType").getValue();
         cfLog.info("静态代理模式："+filterType);

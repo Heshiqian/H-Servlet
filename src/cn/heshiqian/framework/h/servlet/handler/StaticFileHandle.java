@@ -59,7 +59,12 @@ public final class StaticFileHandle {
 
     public static boolean filter(HttpServletRequest request, HttpServletResponse response){
         String temp = request.getRequestURL().toString();
-        String contentType = request.getHeader("Accept").split(",")[0];
+        String accept = request.getHeader("Accept");
+        if (accept==null){
+            cfLog.war("未知请求，无Accept信息头，可能会处理出错");
+            return false;
+        }
+        String contentType = accept.split(",")[0];
         //关闭模式
         if(FrameworkMemoryStorage.filterType==HServlet.FILER_TYPE_OFF)
             return false;

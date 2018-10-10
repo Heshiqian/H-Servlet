@@ -1,5 +1,6 @@
 package cn.heshiqian.framework.h.servlet.tools;
 
+import cn.heshiqian.framework.h.servlet.pojo.RequestMethod;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -143,6 +144,31 @@ public final class Tool {
             }
         }
         return fileList;
+    }
+
+    public static void writeStreamToFile(InputStream stream, String name, String local) throws IOException{
+        FileOutputStream fos = new FileOutputStream(local + "\\" + name);
+        int len;
+        byte[] buff=new byte[1024];
+        while ((len=stream.read(buff))!=-1){
+            fos.write(buff,0,len);
+            fos.flush();
+        }
+        fos.close();
+    }
+
+    public static String requestMethodCodeVName(int code){
+        switch (code){
+            case RequestMethod.GET:
+                return "GET";
+            case RequestMethod.POST:
+                return "POST";
+            case RequestMethod.DELET:
+                return "DELETE";
+            case RequestMethod.PUT:
+                return "PUT";
+        }
+        return "";
     }
 
 }

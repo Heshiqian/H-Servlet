@@ -50,6 +50,9 @@ public final class MainProcessServlet extends HttpServlet {
         } else {
             cfLog.war(HServlet.HS_START_INFO_5);
         }
+
+        cfLog.print("框架启动完毕");
+
         super.init(config);
     }
 

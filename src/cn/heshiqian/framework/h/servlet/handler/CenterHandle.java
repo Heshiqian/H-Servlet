@@ -3,24 +3,35 @@ package cn.heshiqian.framework.h.servlet.handler;
 
 import cn.heshiqian.framework.h.cflog.core.*;
 import cn.heshiqian.framework.h.servlet.annotation.*;
+import cn.heshiqian.framework.h.servlet.annotation.upload.FileMapping;
 import cn.heshiqian.framework.h.servlet.classs.ClassManage;
 import cn.heshiqian.framework.h.servlet.classs.ClassPool;
 import cn.heshiqian.framework.h.servlet.database.FrameworkMemoryStorage;
 import cn.heshiqian.framework.h.servlet.database.HServlet;
+import cn.heshiqian.framework.h.servlet.exception.FileUploadConfigureException;
+import cn.heshiqian.framework.h.servlet.factory.FileAcceptFactory;
+import cn.heshiqian.framework.h.servlet.factory.FileExtraProcessor;
+import cn.heshiqian.framework.h.servlet.file.FileFactory;
 import cn.heshiqian.framework.h.servlet.pojo.RequestMethod;
+import cn.heshiqian.framework.h.servlet.startup.ClassScanner;
 import cn.heshiqian.framework.h.servlet.tools.HttpHelper;
 import cn.heshiqian.framework.h.servlet.view.ViewHandler;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+@SuppressWarnings("all")
 public final class CenterHandle {
 
     private Logger cfLog=CFLog.logger(CenterHandle.class);
@@ -225,6 +236,57 @@ public final class CenterHandle {
     }
 
 
+    public void fileHandle(HttpServletRequest request, HttpServletResponse response, String requestURL) throws InvocationTargetException, IllegalAccessException, NoSuchFieldException, InstantiationException {
+        Class aClass = ClassManage.checkClassWasInit(requestURL);
+        if (aClass == null) {
+            HttpHelper.sendErr(response, HServlet.HANDLE_CENTER_NO_INTERFACE);
+            return;
+        }
+        Object fileService = ClassPool.getClass(aClass);
+        Method[] declaredMethods = aClass.getDeclaredMethods();
+        for(Method m:declaredMethods){
+            RequestUrl re = m.getAnnotation(RequestUrl.class);
+            if(re!=null&&re.value().equals(requestURL)){
+                FileMapping fileMapping = m.getAnnotation(FileMapping.class);
+                if(fileMapping==null){
+                    cfLog.war("你在Service :"+aClass.getTypeName()+"中，方法:"+m.getName()+" 请求URL:"+requestURL+"上缺少注释@FileMapping，即将按默认POST请求处理");
+                    postReqResProcess_(aClass,requestURL,request,response,request.getCookies(),null);
+                    return;
+                }
+                //生成一个Factory
+                Class<FileFactory> fileFactoryClass = FileFactory.class;
+                FileFactory fileFactory = fileFactoryClass.newInstance();
+                //注入需求值
+                Field req = fileFactoryClass.getDeclaredField("request");
+                Field res = fileFactoryClass.getDeclaredField("response");
+                Field factory = fileFactoryClass.getDeclaredField("fileAcceptFactory");
+                req.setAccessible(true);
+                res.setAccessible(true);
+                factory.setAccessible(true);
+                req.set(fileFactory,request);
+                res.set(fileFactory,response);
+                //生成唯一对应的AccpetFactory
+                Class<FileAcceptFactory> fileAcceptFactoryClass = FileAcceptFactory.class;
+                FileAcceptFactory fileAcceptFactory = fileAcceptFactoryClass.newInstance();
+                factory.set(fileFactory,fileAcceptFactory);
+                Parameter[] parameters = m.getParameters();
+                if (parameters.length==0||parameters.length>1){
+                    cfLog.err("方法:"+m.getName()+"中只允许存在FileFactory唯一变量");
+                    throw new IllegalArgumentException("方法:"+m.getName()+"中只允许存在FileFactory唯一变量");
+                }
+                if(!parameters[0].getType().getTypeName().equals(FileFactory.class.getTypeName())){
+                    cfLog.err("方法:"+m.getName()+"中只允许存在FileFactory唯一变量");
+                    throw new IllegalArgumentException("方法:"+m.getName()+"中只允许存在FileFactory唯一变量");
+                }
+                Object invoke = m.invoke(fileService, fileFactory);
+                ResponseBody responseBody = m.getAnnotation(ResponseBody.class);
+                if(responseBody!=null)
+                    viewHandler.analyzeResBody(invoke,response,request.getCookies());
+                else
+                    viewHandler.analysis(invoke,response,request.getCookies());
+            }
+        }
+    }
 
 }
 

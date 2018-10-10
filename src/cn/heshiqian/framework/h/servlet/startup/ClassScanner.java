@@ -2,7 +2,9 @@ package cn.heshiqian.framework.h.servlet.startup;
 
 import cn.heshiqian.framework.h.cflog.core.*;
 
+import cn.heshiqian.framework.h.servlet.annotation.Mapping;
 import cn.heshiqian.framework.h.servlet.annotation.RequestUrl;
+import cn.heshiqian.framework.h.servlet.tools.Tool;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -12,9 +14,7 @@ import java.lang.reflect.Method;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -50,6 +50,7 @@ public final class ClassScanner {
         if(scanner==null){
             scanner=new ClassScanner();
             scanner.startScan(packageName);
+            scanner.filterClass();
         }else
             scanner.reScan(packageName);
         return scanner;
@@ -67,6 +68,31 @@ public final class ClassScanner {
         scanner.startScan(packageName);
     }
 
+    private void filterClass(){
+//        for(Class c:scanClasses){
+//            Mapping mapping = (Mapping) c.getAnnotation(Mapping.class);
+//            if(mapping==null)
+//                scanClasses.remove(c);
+//            else
+//                cfLog.info("Mapping : "+c.getTypeName());
+//        }
+        Iterator<Class<?>> iterator = scanClasses.iterator();
+        while (iterator.hasNext()){
+            Class<?> next = iterator.next();
+            Mapping mapping = next.getAnnotation(Mapping.class);
+            if(mapping==null)
+                iterator.remove();
+            else{
+                cfLog.info("Service Class : "+next.getTypeName());
+                Method[] declaredMethods = next.getDeclaredMethods();
+                for(Method m:declaredMethods){
+                    RequestUrl annotation = m.getAnnotation(RequestUrl.class);
+                    if(annotation!=null)
+                        cfLog.info("Mapping : "+annotation.value()+" "+ Tool.requestMethodCodeVName(annotation.method()));
+                }
+            }
+        }
+    }
 
     /**
      * 扫描开始，在指定的包名下进行，摘自网络

@@ -1,10 +1,11 @@
 package cn.heshiqian.framework.h.servlet.database;
 
+import cn.heshiqian.framework.h.servlet.file.FileFactory;
 import cn.heshiqian.framework.s.xconf.pojo.XConfTree;
 
 import javax.servlet.ServletContext;
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public final class FrameworkMemoryStorage {
 
@@ -25,4 +26,6 @@ public final class FrameworkMemoryStorage {
     public static boolean disabledNullReturnWaring=true;
     public static boolean enableFileUpload=false;
     public static String ServerDomain="";
+    public static File uploadFileSaveF=null;
+
 }

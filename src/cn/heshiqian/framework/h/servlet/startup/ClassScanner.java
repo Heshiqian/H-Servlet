@@ -138,7 +138,8 @@ public final class ClassScanner {
                                         scanClasses.add(Class.forName(pn + '.' + className));
                                         cfLog.info("扫描到类："+scanClasses.get(scanClasses.size()-1).toString());
                                     } catch (ClassNotFoundException e) {
-                                        cfLog.err(e.getMessage());
+                                        //找不到的不添加也不提示
+//                                        cfLog.err(e.getMessage());
                                     }
                                 }
                             }

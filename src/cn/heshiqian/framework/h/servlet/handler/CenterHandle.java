@@ -11,6 +11,7 @@ import cn.heshiqian.framework.h.servlet.database.HServlet;
 import cn.heshiqian.framework.h.servlet.exception.FileUploadConfigureException;
 import cn.heshiqian.framework.h.servlet.factory.FileAcceptFactory;
 import cn.heshiqian.framework.h.servlet.factory.FileExtraProcessor;
+import cn.heshiqian.framework.h.servlet.factory.SessionFactory;
 import cn.heshiqian.framework.h.servlet.file.FileFactory;
 import cn.heshiqian.framework.h.servlet.pojo.RequestMethod;
 import cn.heshiqian.framework.h.servlet.startup.ClassScanner;
@@ -84,7 +85,10 @@ public final class CenterHandle {
                         for (Parameter p : parameters) {
                             Cookies cookiess = p.getAnnotation(Cookies.class);
                             JSONString jsonString = p.getAnnotation(JSONString.class);
-                            if (cookiess != null) {
+                            GetParam getParam = p.getAnnotation(GetParam.class);
+                            if(getParam!=null){
+                                objs.add(keyMap.get(getParam.key()));
+                            } else if (cookiess != null) {
                                 //这个变量为Cookie
                                 objs.add(cookies);
                             } else if (jsonString != null) {
@@ -96,7 +100,6 @@ public final class CenterHandle {
                         }
                         //执行结果，交由视图Handler处理
                         Object invokeResult = m.invoke(service, objs.toArray());
-                        //todo 执行结果，交由视图Handler处理
                         NullReturn nullReturn = m.getAnnotation(NullReturn.class);
                         if (nullReturn != null) {
                             //方法注解了空返回，不交由视图Handler处理，直接返回空
@@ -152,6 +155,7 @@ public final class CenterHandle {
                             Cookies cookiess = p.getAnnotation(Cookies.class);
                             GetParam param = p.getAnnotation(GetParam.class);
                             TextString textString = p.getAnnotation(TextString.class);
+                            Session session = p.getAnnotation(Session.class);
                             if (cookiess != null) {
                                 //这个变量为Cookie
                                 objs.add(cookies);
@@ -168,6 +172,15 @@ public final class CenterHandle {
                                 if (queryString != null)
                                     fullPath += "?" + queryString;
                                 objs.add(fullPath);
+                            } else if(session !=null){
+                              //这个变量是要Session
+                                if(p.getType().getTypeName().trim().equals(SessionFactory.class.getTypeName())){
+                                    SessionFactory sessionFactory = new SessionFactory(request, response);
+                                    objs.add(sessionFactory);
+                                }else {
+                                    cfLog.err("参数："+p.getName()+"不是类SessionFactory的变量！");
+                                    objs.add(null);
+                                }
                             } else {
                                 objs.add(null);
                                 cfLog.war(HServlet.HANDLE_DISPATCHER_INFO_1 + p.getName() + HServlet.HANDLE_DISPATCHER_INFO_2);
@@ -175,7 +188,6 @@ public final class CenterHandle {
                         }
                         //执行结果，交由视图Handler处理
                         Object invokeResult = m.invoke(service, objs.toArray());
-                        //todo 执行结果，交由视图Handler处理
                         NullReturn nullReturn = m.getAnnotation(NullReturn.class);
                         if (nullReturn != null) {
                             //方法注解了空返回，不交由视图Handler处理，直接返回空

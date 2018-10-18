@@ -33,10 +33,8 @@ public final class ViewHandler {
 
         if (isMapToFile) {
             if (rs instanceof String) {
-                //todo 按照一个正常的文本返回
                 HttpHelper.sendNormal(response, (String) rs);
             } else if (rs instanceof VO) {
-                //todo 按照ViewObject返回，需要解析VO对象
                 VO vo = (VO) rs;
                 if (vo.isTemplate()) {
                     String templateFile = vo.getTemplateFile();
@@ -91,7 +89,6 @@ public final class ViewHandler {
 
 
     public void analyzeResBody(Object rs, HttpServletResponse response, Cookie[] cookies){
-        //todo cookie好像都没有写，到时候再处理
         if(rs==null){
             HttpHelper.sendNormal(response,"null");
             return;

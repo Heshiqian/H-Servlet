@@ -124,7 +124,6 @@ public final class ServletReqHandler {
                     }
                     if (json.indexOf("[") == 0 && json.lastIndexOf("]") == json.length() - 1) {
                         //证明这是个数组JSONArray对象
-                        //todo 不完整，需完善
 //                        HashMap<String, ?> listMap = Tool.jsonToList(json);
 //                        keyMap.putAll(listMap);
 //                        centerHandle.distributor(RequestMethod.POST,requestURL,request,response,request.getCookies(),keyMap);
@@ -136,6 +135,9 @@ public final class ServletReqHandler {
                     HttpHelper.sendErr(response, HServlet.SQH_ERROR_3);
                     e.printStackTrace();
                 }
+            }else {
+                centerHandle.distributor(RequestMethod.POST, requestURL, request, response, request.getCookies(), keyMap);
+                return;
             }
         }
     }

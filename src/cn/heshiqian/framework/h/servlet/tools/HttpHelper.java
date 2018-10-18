@@ -63,8 +63,9 @@ public final class HttpHelper {
 
             while ((len=bufferedInputStream.read(buffer))!=-1){
                 outputStream.write(buffer,0,len);
+                outputStream.flush();
             }
-
+            bufferedInputStream.close();
             outputStream.close();
         } catch (IOException e) {
             e.printStackTrace();

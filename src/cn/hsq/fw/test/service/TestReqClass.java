@@ -5,6 +5,7 @@ import cn.heshiqian.framework.h.cflog.core.Logger;
 import cn.heshiqian.framework.h.servlet.annotation.*;
 import cn.heshiqian.framework.h.servlet.annotation.upload.FileMapping;
 import cn.heshiqian.framework.h.servlet.factory.FileExtraProcessor;
+import cn.heshiqian.framework.h.servlet.factory.SessionFactory;
 import cn.heshiqian.framework.h.servlet.file.FileFactory;
 import cn.heshiqian.framework.h.servlet.file.FileConfig;
 import cn.heshiqian.framework.h.servlet.pojo.RequestMethod;
@@ -93,8 +94,13 @@ public class TestReqClass {
             }
         });
 
+
         return "{'code':1,'str':'成功上传'}";
     }
 
+    @RequestUrl(value = "/t3")
+    public void t3(@Session SessionFactory a){
+        System.out.println(a.toString());
+    }
 
 }

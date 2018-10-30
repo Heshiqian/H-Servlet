@@ -1,6 +1,10 @@
-##【H】[框架类]H-Servlet 简单的Web框架
+## 【H】[框架类]H-Servlet 简单的Web框架
 
 --------------
+
+更多详情查看：
+https://blog.csdn.net/hsq062_2/article/details/81570232
+
 
 H代号作品，简单的Servlet框架，基于Tomcat服务器
 

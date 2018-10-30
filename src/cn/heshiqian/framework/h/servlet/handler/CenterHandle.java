@@ -99,6 +99,8 @@ public final class CenterHandle {
                             }
                         }
                         //执行结果，交由视图Handler处理
+                        if(!m.isAccessible())
+                            m.setAccessible(true);
                         Object invokeResult = m.invoke(service, objs.toArray());
                         NullReturn nullReturn = m.getAnnotation(NullReturn.class);
                         if (nullReturn != null) {
@@ -187,6 +189,8 @@ public final class CenterHandle {
                             }
                         }
                         //执行结果，交由视图Handler处理
+                        if(!m.isAccessible())
+                            m.setAccessible(true);
                         Object invokeResult = m.invoke(service, objs.toArray());
                         NullReturn nullReturn = m.getAnnotation(NullReturn.class);
                         if (nullReturn != null) {

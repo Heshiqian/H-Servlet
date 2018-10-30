@@ -60,7 +60,7 @@ public final class ServletReqHandler {
             String key = keys.nextElement();
             keyMap.put(key, request.getParameter(key));
         }
-
+        
         //交由中心Handle处理
         centerHandle.distributor(RequestMethod.GET, requestURL, request, response, request.getCookies(), keyMap);
     }
@@ -126,8 +126,10 @@ public final class ServletReqHandler {
                         //证明这是个数组JSONArray对象
 //                        HashMap<String, ?> listMap = Tool.jsonToList(json);
 //                        keyMap.putAll(listMap);
-//                        centerHandle.distributor(RequestMethod.POST,requestURL,request,response,request.getCookies(),keyMap);
-                        HttpHelper.sendErr(response, HServlet.SQH_ERROR_UNCODE);
+                        //2018年10月23日12:57:25未开发部分，但是仍然放出原JSON串
+                        keyMap.put(HServlet.SYS_CONSTANT_KEY, json);
+                        centerHandle.distributor(RequestMethod.POST,requestURL,request,response,request.getCookies(),keyMap);
+//                        HttpHelper.sendErr(response, HServlet.SQH_ERROR_UNCODE);
                         return;
                     }
                     throw new JSONException(HServlet.SQH_ERROR_2);

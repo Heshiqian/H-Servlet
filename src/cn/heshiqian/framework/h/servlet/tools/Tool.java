@@ -163,7 +163,7 @@ public final class Tool {
                 return "GET";
             case RequestMethod.POST:
                 return "POST";
-            case RequestMethod.DELET:
+            case RequestMethod.DELETE:
                 return "DELETE";
             case RequestMethod.PUT:
                 return "PUT";

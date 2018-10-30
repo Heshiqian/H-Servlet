@@ -45,16 +45,10 @@ public class TestReqClass {
 
 
 //    @ResponseBody
-    @MapToFile
+//    @MapToFile
     @RequestUrl(value = "/b",method = RequestMethod.POST)
-    public VO t2(@JSONString String json){
+    public void t2(@JSONString String json){
         System.out.println(json);
-        VO vo = new VO();
-        vo.openTemplate();
-        vo.setTemplateFile("A.html");
-        vo.put("a","我放了个东西在这里");
-
-        return vo;
     }
 
     @FileMapping
@@ -81,6 +75,8 @@ public class TestReqClass {
             }
         });
 
+        fileFactory.deleteThisFile();
+
         //释放资源，可以在里面写入一个阻塞方法，后台执行
         fileFactory.release(new Runnable() {
             @Override
@@ -101,6 +97,11 @@ public class TestReqClass {
     @RequestUrl(value = "/t3")
     public void t3(@Session SessionFactory a){
         System.out.println(a.toString());
+    }
+
+    @RequestUrl(value = "/t4")
+    private void t5(@TextString String text){
+        System.out.println(text);
     }
 
 }

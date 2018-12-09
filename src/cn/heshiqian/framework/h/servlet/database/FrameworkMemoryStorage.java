@@ -27,5 +27,6 @@ public final class FrameworkMemoryStorage {
     public static boolean enableFileUpload=false;
     public static String ServerDomain="";
     public static File uploadFileSaveF=null;
+    public static String contextPath="";
 
 }

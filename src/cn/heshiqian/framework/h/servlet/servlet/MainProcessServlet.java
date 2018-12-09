@@ -9,6 +9,7 @@ import cn.heshiqian.framework.h.servlet.exception.NotExistInitParameterException
 import cn.heshiqian.framework.h.servlet.handler.ServletReqHandler;
 import cn.heshiqian.framework.h.servlet.handler.StaticFileHandle;
 import cn.heshiqian.framework.h.servlet.startup.ContextScanner;
+import cn.heshiqian.framework.h.servlet.tools.HttpHelper;
 import cn.heshiqian.framework.h.servlet.tools.Tool;
 import cn.heshiqian.framework.h.servlet.view.ViewHandler;
 
@@ -78,12 +79,25 @@ public final class MainProcessServlet extends HttpServlet {
     }
 
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        req.setCharacterEncoding("utf-8");
+        resp.setCharacterEncoding("utf-8");
+        servletReqHandler.DeleteHandler(req, resp);
     }
 
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
     }
 
+    protected void doHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doHead(req, resp);
+    }
 
+    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doOptions(req, resp);
+    }
+
+    @Override
+    protected void doTrace(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.sendError(400);
+    }
 }

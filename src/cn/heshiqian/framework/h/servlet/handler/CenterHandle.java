@@ -54,6 +54,9 @@ public final class CenterHandle {
                     //已存在此类，继续操作
                     postReqResProcess_(cclass, url, request, response, cookies, keyMap);
                     break;
+                case RequestMethod.DELETE:
+                    deleteReqResProcess_(cclass,url,request,response,cookies,keyMap);
+                    break;
                 default:
                     break;
             }
@@ -67,6 +70,10 @@ public final class CenterHandle {
             HttpHelper.sendErr(response, errMsg);
             e.printStackTrace();
         }
+    }
+
+    private void deleteReqResProcess_(Class c,String url,HttpServletRequest request, HttpServletResponse response, Cookie[] cookies, HashMap<String, String> keyMap) throws InvocationTargetException, IllegalAccessException{
+        System.out.println(keyMap.toString());
     }
 
     private void postReqResProcess_(Class c, String url, HttpServletRequest request, HttpServletResponse response, Cookie[] cookies, HashMap<String, String> keyMap) throws InvocationTargetException, IllegalAccessException {

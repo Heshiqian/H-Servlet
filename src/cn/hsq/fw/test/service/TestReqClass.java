@@ -104,4 +104,9 @@ public class TestReqClass {
         System.out.println(text);
     }
 
+    @RequestUrl(value = "/t5",method = RequestMethod.DELETE)
+    private void t6(){
+
+    }
+
 }

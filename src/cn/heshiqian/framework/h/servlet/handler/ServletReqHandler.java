@@ -60,12 +60,12 @@ public final class ServletReqHandler {
             String key = keys.nextElement();
             keyMap.put(key, request.getParameter(key));
         }
-        
+
         //交由中心Handle处理
         centerHandle.distributor(RequestMethod.GET, requestURL, request, response, request.getCookies(), keyMap);
     }
 
-    public void PostHandler(HttpServletRequest request, HttpServletResponse response){
+    public void PostHandler(HttpServletRequest request, HttpServletResponse response) {
         //这里开始都是分割请求地址
 //        String serverPort = String.valueOf(request.getServerPort());
         String requestURLa = request.getRequestURL().toString();
@@ -90,9 +90,9 @@ public final class ServletReqHandler {
                 return;
             }
             try {
-                centerHandle.fileHandle(request,response,requestURL);
+                centerHandle.fileHandle(request, response, requestURL);
             } catch (Exception e) {
-                cfLog.err("文件上传转发错误："+e.toString());
+                cfLog.err("文件上传转发错误：" + e.toString());
                 cfLog.err(e.getCause().getMessage());
             }
             return;
@@ -128,7 +128,7 @@ public final class ServletReqHandler {
 //                        keyMap.putAll(listMap);
                         //2018年10月23日12:57:25未开发部分，但是仍然放出原JSON串
                         keyMap.put(HServlet.SYS_CONSTANT_KEY, json);
-                        centerHandle.distributor(RequestMethod.POST,requestURL,request,response,request.getCookies(),keyMap);
+                        centerHandle.distributor(RequestMethod.POST, requestURL, request, response, request.getCookies(), keyMap);
 //                        HttpHelper.sendErr(response, HServlet.SQH_ERROR_UNCODE);
                         return;
                     }
@@ -137,11 +137,29 @@ public final class ServletReqHandler {
                     HttpHelper.sendErr(response, HServlet.SQH_ERROR_3);
                     e.printStackTrace();
                 }
-            }else {
+            } else {
                 centerHandle.distributor(RequestMethod.POST, requestURL, request, response, request.getCookies(), keyMap);
                 return;
             }
         }
+    }
+
+    public void DeleteHandler(HttpServletRequest request, HttpServletResponse response) {
+        String requestURLa = request.getRequestURL().toString();
+//        requestURL=requestURL.substring(requestURL.indexOf(serverPort)+serverPort.length());
+        String requestURL = splitURL(requestURLa);
+        if (requestURL == null) {
+            cfLog.err("地址解析错误=URL:" + requestURLa);
+            throw new RuntimeException("地址解析错误！");
+        }
+        cfLog.info("path:" + requestURL);
+        HashMap<String, String> keyMap = new HashMap<>();
+        Enumeration<String> keys = request.getParameterNames();
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            keyMap.put(key, request.getParameter(key));
+        }
+        centerHandle.distributor(RequestMethod.DELETE, requestURL, request, response, request.getCookies(), keyMap);
     }
 
     private boolean checkIconFile(String url) {

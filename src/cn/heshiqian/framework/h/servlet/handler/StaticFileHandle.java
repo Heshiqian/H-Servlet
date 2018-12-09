@@ -74,8 +74,8 @@ public final class StaticFileHandle {
             String fileName = temp.substring(temp.lastIndexOf("/"));
             temp = temp.substring(temp.indexOf("/", 10));
             for (String s : staticFileList) {
-                if (s.equals(temp)) {
-                    ViewHandler.reSendStaticFile(response, temp, fileName, contentType, FrameworkMemoryStorage.staticFileLogSwitch);
+                if ((FrameworkMemoryStorage.contextPath+s).equals(temp)) {
+                    ViewHandler.reSendStaticFile(response, temp.replace(FrameworkMemoryStorage.contextPath,""), fileName, contentType, FrameworkMemoryStorage.staticFileLogSwitch);
                     return true;
                 }
             }

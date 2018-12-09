@@ -50,6 +50,15 @@ public final class ContextScanner {
     }
 
     public static void prepare(){
+
+//        2018年11月16日21:11:28 添加对Context路径的支持，出现在War包部署中
+        String contextPath = context.getContextPath();
+        if(!contextPath.equals("")){
+            //证明ContextPath不为 '/'  (不为ROOT路径)
+            cfLog.info("检测到上下文路径："+contextPath);
+            FrameworkMemoryStorage.contextPath=contextPath;
+        }
+
         String[] IPV4Address={};
 
         //2018年9月6日10:11:23
@@ -126,10 +135,10 @@ public final class ContextScanner {
         if(!(FrameworkMemoryStorage.ServerPort.equals("80")||FrameworkMemoryStorage.ServerPort.equals("443"))){
             ArrayList<String> tempList=new ArrayList<>();
             for(String s:IPV4Address){
-                tempList.add(s+":"+FrameworkMemoryStorage.ServerPort);
+                tempList.add(s+":"+FrameworkMemoryStorage.ServerPort+FrameworkMemoryStorage.contextPath);
             }
             if(!FrameworkMemoryStorage.ServerDomain.equals(""))
-                tempList.add(FrameworkMemoryStorage.ServerDomain+":"+FrameworkMemoryStorage.ServerPort);
+                tempList.add(FrameworkMemoryStorage.ServerDomain+":"+FrameworkMemoryStorage.ServerPort+FrameworkMemoryStorage.contextPath);
             FrameworkMemoryStorage.allLocalIpAddress=tempList;
         }else {
             FrameworkMemoryStorage.allLocalIpAddress=new ArrayList<>();

@@ -167,6 +167,9 @@ public final class ServletReqHandler {
     }
 
     private String splitURL(String url) {
+        if(url.indexOf(";")!=-1){
+            url=url.substring(0,url.indexOf(";"));
+        }
         for (String s : FrameworkMemoryStorage.allLocalIpAddress) {
             if (url.contains(s)) {
                 String substring = url.substring(url.indexOf(s) + s.length());

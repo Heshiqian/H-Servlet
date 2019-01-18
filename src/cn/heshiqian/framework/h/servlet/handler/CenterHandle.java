@@ -93,6 +93,7 @@ public final class CenterHandle {
                             Cookies cookiess = p.getAnnotation(Cookies.class);
                             JSONString jsonString = p.getAnnotation(JSONString.class);
                             GetParam getParam = p.getAnnotation(GetParam.class);
+                            Session session = p.getAnnotation(Session.class);
                             if(getParam!=null){
                                 objs.add(keyMap.get(getParam.key()));
                             } else if (cookiess != null) {
@@ -100,7 +101,16 @@ public final class CenterHandle {
                                 objs.add(cookies);
                             } else if (jsonString != null) {
                                 objs.add(oldJSON);
-                            } else {
+                            } else if(session!=null){
+                                //这个变量是要Session
+                                if(p.getType().getTypeName().trim().equals(SessionFactory.class.getTypeName())){
+                                    SessionFactory sessionFactory = new SessionFactory(request, response);
+                                    objs.add(sessionFactory);
+                                }else {
+                                    cfLog.err("参数："+p.getName()+"不是类SessionFactory的变量！");
+                                    objs.add(null);
+                                }
+                            }else {
                                 objs.add(null);
                                 cfLog.war(HServlet.HANDLE_DISPATCHER_INFO_1 + p.getName() + HServlet.HANDLE_DISPATCHER_INFO_2);
                             }

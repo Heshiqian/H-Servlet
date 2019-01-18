@@ -3,15 +3,16 @@
 --------------
 
 更多详情查看：
-https://blog.csdn.net/hsq062_2/article/details/81570232
-
+https://blog.csdn.net/hsq062_2/article/details/83538901
 
 
 H代号作品，简单的Servlet框架，基于Tomcat服务器
 
 ### 使用方法：
 
-#### 嘿嘿嘿，还没写
+#### https://blog.csdn.net/hsq062_2/article/details/83024385 第一章
+#### https://blog.csdn.net/hsq062_2/article/details/83033914 第二章
+#### https://blog.csdn.net/hsq062_2/article/details/83508679 第三章
 
 ### 开发日志：
 

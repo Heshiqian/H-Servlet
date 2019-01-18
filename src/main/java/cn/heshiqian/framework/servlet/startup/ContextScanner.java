@@ -73,7 +73,8 @@ public final class ContextScanner {
         //找到conf文件
         String path = Tool.FileFinder.find(file, "configuration.conf");
         System.out.println(path);
-        XConfTree confTree = XConf.read(path);
+//        XConfTree confTree = XConf.read(path);
+        XConfTree confTree = XConf.read("configuration.conf");
         FrameworkMemoryStorage.mainConfigure=confTree;
 
         //用NetworkInterface获取本地所有网络地址
